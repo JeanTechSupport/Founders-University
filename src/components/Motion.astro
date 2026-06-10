@@ -1,0 +1,102 @@
+---
+import { copy, media, type Locale } from "../content/site";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const m = copy[locale].motion;
+const tickerItems = [...m.ticker, ...m.ticker];
+---
+
+<section class="section section-dark" id="in-motion" data-altitude data-motion-gallery>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__row">
+      {
+        tickerItems.map((item) => (
+          <>
+            <span>{item}</span>
+            <i />
+          </>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="container motion__head">
+    <div data-reveal>
+      <p class="eyebrow">{m.eyebrow}</p>
+      <h2>{m.title}</h2>
+    </div>
+    <p data-reveal style="--i: 1">{m.body}</p>
+  </div>
+
+  <div class="container motion__cards">
+    {
+      media.motionVideos.map((video, i) => (
+        <article class="motion__card" data-reveal style={`--i: ${i}`}>
+          <div class="motion__media" data-motion-video data-video-id={video.id} data-video-title={video.title}>
+            <img src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`} alt="" loading="lazy" />
+          </div>
+          <div class="motion__body">
+            <span class="motion__cue">{m.cues[i]}</span>
+            <h3>{video.title}</h3>
+            <a class="text-link" href={`https://youtu.be/${video.id}`} target="_blank" rel="noreferrer" data-cursor="Watch">
+              {m.watchLabel} <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll("[data-motion-gallery]").forEach((gallery) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const slots = gallery.querySelectorAll("[data-motion-video]");
+    let timer: number | undefined;
+
+    const command = (frame: HTMLIFrameElement, func: string) => {
+      frame.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*");
+    };
+
+    const load = (slot: Element) => {
+      if (!(slot instanceof HTMLElement) || slot.dataset.loaded === "true") return;
+      const id = slot.dataset.videoId;
+      const title = slot.dataset.videoTitle;
+      if (!id || !title) return;
+      const frame = document.createElement("iframe");
+      frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`;
+      frame.title = title;
+      frame.loading = "lazy";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture";
+      frame.tabIndex = -1;
+      frame.addEventListener("load", () => {
+        command(frame, "mute");
+        command(frame, "playVideo");
+      });
+      slot.append(frame);
+      slot.dataset.loaded = "true";
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (timer !== undefined) return;
+          timer = window.setTimeout(() => {
+            slots.forEach(load);
+            timer = undefined;
+          }, 4000);
+        } else if (timer !== undefined) {
+          window.clearTimeout(timer);
+          timer = undefined;
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(gallery);
+  });
+</script>

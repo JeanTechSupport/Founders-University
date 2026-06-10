@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#090b0c"/>
+  <path d="M72 92h1056" stroke="#ae8954" stroke-width="2"/>
+  <path d="M72 535h380" stroke="#ae8954" stroke-width="2"/>
+  <text x="72" y="269" fill="#f5f1e8" font-family="Arial, sans-serif" font-size="54" letter-spacing="12">FOUNDERS</text>
+  <text x="67" y="380" fill="#f5f1e8" font-family="Georgia, serif" font-size="118">UNIVERSITY</text>
+  <text x="76" y="467" fill="#bdb6aa" font-family="Arial, sans-serif" font-size="26">Guidance, discipline and community for building online.</text>
+</svg>

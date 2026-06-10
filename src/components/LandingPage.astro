@@ -1,0 +1,391 @@
+---
+import { brand, copy, offer, showDutch, v2, type Locale } from "../content/site";
+import Hero from "./Hero.astro";
+import Journey from "./Journey.astro";
+import Motion from "./Motion.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = copy[locale];
+const x = v2[locale];
+const year = new Date().getFullYear();
+
+// Rail order follows the visible scroll order. "in-motion" was moved to the
+// bottom of the page; the proof band sits between "the-founder" and "the-story"
+// without its own rail entry.
+const ids = [
+  "basecamp",
+  "the-founder",
+  "the-reason",
+  "the-story",
+  "inside",
+  "first-30",
+  "principles",
+  "the-fit",
+  "enrollment",
+  "questions",
+  "in-motion",
+];
+
+// Manifesto split into words; em-dash clause becomes the brass accent.
+const manifestoWords = x.manifesto.split(" ");
+let accentActive = false;
+const manifestoTokens = manifestoWords.map((w) => {
+  if (w === "—") accentActive = true;
+  return { w, accent: accentActive };
+});
+---
+
+<!-- Header -->
+<header class="v2-header" data-v2-header>
+  <div class="container v2-header__inner">
+    <a class="wordmark" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
+      <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+    </a>
+    <div class="v2-header__actions">
+      {showDutch && (
+        <nav class="lang-switch" aria-label={t.navigation.accessibilityLabel}>
+          <a href="/" lang="en" hreflang="en" aria-current={locale === "en" ? "page" : undefined}>EN</a>
+          <a href="/nl/" lang="nl" hreflang="nl" aria-current={locale === "nl" ? "page" : undefined}>NL</a>
+        </nav>
+      )}
+      <a class="btn" href="#enrollment" data-magnetic="0.35" data-cursor="Start"><span>{t.navigation.cta}</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- Altitude rail -->
+<nav class="altitude" aria-label="Page sections">
+  {
+    x.sectionLabels.map((label, i) => (
+      <button class="altitude__item" type="button" data-target={`#${ids[i]}`}>
+        <span class="altitude__label">{label}</span>
+        <span class="altitude__tick" aria-hidden="true" />
+      </button>
+    ))
+  }
+</nav>
+
+<main>
+  <Hero locale={locale} />
+
+  <!-- A special message from Kim — self-hosted video (8-bit SDR, web-safe) -->
+  <section class="section section-dark" id="the-founder" data-altitude>
+    <div class="container founder">
+      <div class="section-head founder__head" data-reveal>
+        <p class="eyebrow">{t.video.eyebrow}</p>
+        {t.video.title && <h2 class="section-title">{t.video.title}</h2>}
+      </div>
+      <div class="video-player" data-reveal="scale" data-video-player>
+        <video
+          class="video-player__el"
+          playsinline
+          preload="metadata"
+          poster="/kim-thumb.png"
+          aria-label={t.video.iframeTitle}
+        >
+          <source src="/kim-message.mp4" type="video/mp4" />
+        </video>
+        <button class="video-player__start" type="button" data-video-start aria-label={t.video.iframeTitle}></button>
+        <button class="video-player__replay" type="button" data-video-replay hidden>↻ Play again</button>
+      </div>
+      <div class="founder__cta" data-reveal>
+        <a class="btn btn--ghost" href="#enrollment" data-magnetic="0.3" data-cursor="Explore"><span>{t.video.cta}</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto -->
+  <section class="manifesto" id="the-reason" data-altitude>
+    <div class="manifesto__sticky">
+      <div class="manifesto__inner">
+        <p class="eyebrow">{x.manifestoEyebrow}</p>
+        <p class="manifesto__text">
+          {
+            manifestoTokens.map((tok) => (
+              <>
+                <span class:list={["mword", { "is-accent": tok.accent }]}>{tok.w}</span>{" "}
+              </>
+            ))
+          }
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof stats — split out of the (hidden) founder section so they stay visible -->
+  <section class="section section-dark proof-section">
+    <div class="container">
+      <div class="proof">
+        {
+          t.proof.map((item, i) => (
+            <div class="proof__item" data-reveal style={`--i: ${i}`}>
+              <span class="proof__value" data-count={item.value}>
+                {item.value}
+              </span>
+              <span class="proof__label">{item.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="section section-paper" id="the-story" data-altitude>
+    <div class="container story__grid">
+      <div class="story__copy" data-reveal>
+        <p class="eyebrow">{t.story.eyebrow}</p>
+        <h2>{t.story.title}</h2>
+        {t.story.paragraphs.map((p) => <p>{p}</p>)}
+        <p class="story__attribution">{t.story.attribution}</p>
+      </div>
+      <!-- Founder portrait placeholder — HIDDEN FOR NOW (kept in code). Re-enable
+           by removing `hidden` once a real founder photo is supplied. -->
+      <div class="portrait" data-reveal="right" data-parallax="0.06" aria-hidden="true" hidden>
+        <img class="portrait__crest" src="/Founders-university icon.svg" alt="" />
+        <div class="portrait__plate">
+          <span class="portrait__name">{t.story.mediaTitle}</span>
+          <span class="portrait__role">{t.story.mediaEyebrow}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits bento -->
+  <section class="section section-dark" id="inside" data-altitude>
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.benefits.eyebrow}</p>
+        <h2 class="section-title">{t.benefits.title}</h2>
+      </div>
+      <div class="carousel" data-carousel>
+        <div class="carousel__viewport">
+          <div class="carousel__track" data-carousel-track>
+            {
+              t.benefits.cards.map((card, i) => (
+                <div class="carousel__slide">
+                  <article class="bcard">
+                    <span class="bcard__num">
+                      {String(i + 1).padStart(2, "0")} / {String(t.benefits.cards.length).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3>{card.title}</h3>
+                      <p>{card.body}</p>
+                    </div>
+                    <ul class="bcard__points">
+                      {card.points.map((point) => (
+                        <li>{point}</li>
+                      ))}
+                    </ul>
+                  </article>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+        <div class="carousel__controls">
+          <button class="carousel__arrow" type="button" data-carousel-prev aria-label="Previous">&lsaquo;</button>
+          <div class="carousel__dots" data-carousel-dots></div>
+          <button class="carousel__arrow" type="button" data-carousel-next aria-label="Next">&rsaquo;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- First 30 days -->
+  <section class="section section-slate" id="first-30" data-altitude>
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.method.eyebrow}</p>
+        <h2 class="section-title">{t.method.title}</h2>
+        <p class="lede" style="margin-top: 1.4rem">{t.method.body}</p>
+      </div>
+      <div data-reveal style="--i: 1">
+        <Journey locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Ethos / principles -->
+  <section class="section section-dark" id="principles" data-altitude>
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{x.ethos.eyebrow}</p>
+        <h2 class="section-title">{x.ethos.title}</h2>
+      </div>
+      <div class="ethos__grid">
+        {
+          x.ethos.items.map((item, i) => (
+            <div class="ethos__item" data-reveal style={`--i: ${i % 2}`}>
+              <span class="ethos__index">{String(i + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Fit / not fit -->
+  <section class="section section-paper-2" id="the-fit" data-altitude>
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.fit.eyebrow}</p>
+        <h2 class="section-title">{t.fit.title}</h2>
+      </div>
+      <div class="fit__grid">
+        <article class="fit__card fit__card--yes" data-reveal="left">
+          <h3><span class="fit__icon" aria-hidden="true">✓</span>{t.fit.forTitle}</h3>
+          <ul>{t.fit.forPoints.map((p) => <li>{p}</li>)}</ul>
+        </article>
+        <article class="fit__card fit__card--no" data-reveal="right">
+          <h3><span class="fit__icon" aria-hidden="true">✕</span>{t.fit.notTitle}</h3>
+          <ul>{t.fit.notPoints.map((p) => <li>{p}</li>)}</ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section section-dark" id="enrollment" data-altitude>
+    <div class="container pricing__grid">
+      <div class="pricing__copy" data-reveal>
+        <p class="eyebrow">{t.pricing.eyebrow}</p>
+        <h2>{t.pricing.title}</h2>
+        <p>{t.pricing.body}</p>
+      </div>
+      <article class="price-card" data-reveal="right">
+        <div class="price-card__head">
+          <a class="wordmark wordmark--xl" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
+            <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+          </a>
+          <span class="price-card__plan">{x.planLabel}</span>
+        </div>
+        <div class="price">
+          <strong>{offer.monthlyPrice}</strong>
+          <span>{offer.billingCadence[locale]}</span>
+        </div>
+        <p class="price-card__label">{t.pricing.includesTitle}</p>
+        <ul>{t.pricing.included.map((item) => <li>{item}</li>)}</ul>
+        {
+          offer.enrollmentDeadline && (
+            <div class="countdown" data-countdown={offer.enrollmentDeadline} data-cd-ended={x.countdown.ended}>
+              <p class="countdown__caption">{x.countdown.caption}</p>
+              <div class="countdown__clock">
+                <div class="countdown__unit"><span class="countdown__num" data-cd="days">--</span><span class="countdown__lbl">{x.countdown.days}</span></div>
+                <div class="countdown__unit"><span class="countdown__num" data-cd="hours">--</span><span class="countdown__lbl">{x.countdown.hours}</span></div>
+                <div class="countdown__unit"><span class="countdown__num" data-cd="minutes">--</span><span class="countdown__lbl">{x.countdown.minutes}</span></div>
+                <div class="countdown__unit"><span class="countdown__num" data-cd="seconds">--</span><span class="countdown__lbl">{x.countdown.seconds}</span></div>
+              </div>
+            </div>
+          )
+        }
+        <a class="btn btn--block btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer">
+          <span>{t.pricing.cta}</span>
+        </a>
+        {offer.cancelAnytime && <p class="assurance">{t.pricing.assurance}</p>}
+      </article>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-paper" id="questions" data-altitude>
+    <div class="container faq__grid">
+      <div class="section-head" data-reveal style="margin-bottom: 0">
+        <p class="eyebrow">{t.faq.eyebrow}</p>
+        <h2 class="section-title">{t.faq.title}</h2>
+      </div>
+      <div class="faq__list" data-reveal="right">
+        {
+          t.faq.items.map((item, i) => (
+            <div class="faq__item">
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls={`faq-a-${i}`}>
+                {item.question}
+                <span class="faq__icon" aria-hidden="true" />
+              </button>
+              <div class="faq__a" id={`faq-a-${i}`}>
+                <div class="faq__a-inner">{item.answer}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- In motion — moved to the bottom of the page (per feedback) -->
+  <Motion locale={locale} />
+</main>
+
+<!-- Footer -->
+<footer class="v2-footer">
+  <div class="container">
+    <div class="footer__cta" data-reveal>
+      <h2>{t.footer.statement}</h2>
+      <a class="btn btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join">
+        <span>{t.pricing.cta}</span>
+      </a>
+    </div>
+    <div class="footer__grid">
+      <div>
+        <a class="wordmark wordmark--lg" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
+          <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+        </a>
+        <p class="footer__statement">{t.story.mediaBody}</p>
+      </div>
+      <div class="footer__meta">
+        <div class="footer__links">
+          <a href={brand.companyUrl} target="_blank" rel="noreferrer">{t.footer.companyLink}</a>
+          <a href={brand.youtubeUrl} target="_blank" rel="noreferrer">{t.footer.youtubeLink}</a>
+        </div>
+        <p class="footer__disclaimer">{t.footer.disclaimer}</p>
+        <p class="footer__copyright">&copy; {year} {brand.name}</p>
+      </div>
+    </div>
+    <button class="to-top" type="button" data-cursor="Top">
+      <span class="to-top__line" aria-hidden="true"></span>
+      {x.backToTop}
+    </button>
+  </div>
+  <img class="footer__crest" src="/Founders-university icon.svg" alt="" aria-hidden="true" />
+</footer>
+
+<a class="mobile-cta btn btn--block" href="#enrollment"><span>{t.navigation.cta}</span></a>
+
+<script>
+  /* "A special message from Kim" — Kim's thumbnail is a click-to-play poster
+     (play button + title baked in). Click plays with sound; "Play again" on end. */
+  const player = document.querySelector("[data-video-player]");
+  const vid = player?.querySelector(".video-player__el");
+  const startBtn = player?.querySelector("[data-video-start]");
+  const replayBtn = player?.querySelector("[data-video-replay]");
+
+  if (player instanceof HTMLElement && vid instanceof HTMLVideoElement) {
+    const begin = () => {
+      player.classList.remove("is-ended");
+      if (startBtn instanceof HTMLElement) startBtn.hidden = true;
+      if (replayBtn instanceof HTMLElement) replayBtn.hidden = true;
+      vid.controls = true;
+      vid.muted = false;
+      vid.play().catch(() => {});
+    };
+
+    startBtn?.addEventListener("click", begin);
+
+    replayBtn?.addEventListener("click", () => {
+      vid.currentTime = 0;
+      begin();
+    });
+
+    vid.addEventListener("ended", () => {
+      player.classList.add("is-ended");
+      vid.controls = false;
+      if (replayBtn instanceof HTMLElement) replayBtn.hidden = false;
+    });
+  }
+</script>

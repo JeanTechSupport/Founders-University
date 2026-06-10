@@ -1,0 +1,114 @@
+---
+import { copy, offer, type Locale } from "../content/site";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const method = copy[locale].method;
+const weekLabel = locale === "en" ? "Week" : "Week";
+---
+
+<div class="journey" data-journey>
+  <div class="journey__track" role="tablist" aria-label={method.navigationLabel}>
+    <div class="journey__line" aria-hidden="true"><span data-journey-progress></span></div>
+    {
+      method.steps.map((step, i) => (
+        <button
+          class:list={["journey__tab", { "is-active": i === 0 }]}
+          type="button"
+          role="tab"
+          id={`asc-tab-${i}`}
+          aria-controls={`asc-panel-${i}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? "0" : "-1"}
+          data-journey-tab
+          data-cursor="View"
+        >
+          <span class="journey__dot">{step.number}</span>
+          <span>
+            <small>
+              {weekLabel} {i + 1}
+            </small>
+            <strong>{step.title}</strong>
+          </span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="journey__stage">
+    {
+      method.steps.map((step, i) => (
+        <article
+          class:list={["journey__panel", { "is-active": i === 0 }]}
+          role="tabpanel"
+          id={`asc-panel-${i}`}
+          aria-labelledby={`asc-tab-${i}`}
+          hidden={i !== 0}
+          data-journey-panel
+        >
+          <span class="journey__week">
+            {weekLabel} {i + 1} — {step.number} / 04
+          </span>
+          <h3>{step.title}</h3>
+          <p>{step.body}</p>
+          <p class="journey__check">
+            <span aria-hidden="true">✦</span>
+            {step.checkpoint}
+          </p>
+        </article>
+      ))
+    }
+    <div class="journey__actions">
+      <a class="btn" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.4" data-cursor="Join">
+        <span>{method.cta}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll("[data-journey]").forEach((journey) => {
+    const tabs = Array.from(journey.querySelectorAll("[data-journey-tab]"));
+    const panels = Array.from(journey.querySelectorAll("[data-journey-panel]"));
+    const next = journey.querySelector("[data-journey-next]");
+    const progress = journey.querySelector("[data-journey-progress]");
+    if (!(progress instanceof HTMLElement) || tabs.length === 0) return;
+
+    let active = 0;
+    const show = (index: number) => {
+      active = index;
+      tabs.forEach((tab, i) => {
+        if (!(tab instanceof HTMLElement)) return;
+        const on = i === index;
+        tab.classList.toggle("is-active", on);
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((panel, i) => {
+        if (!(panel instanceof HTMLElement)) return;
+        const on = i === index;
+        panel.hidden = !on;
+        panel.classList.toggle("is-active", on);
+      });
+      progress.style.height = `${(index / Math.max(1, tabs.length - 1)) * 100}%`;
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => show(i));
+      tab.addEventListener("keydown", (e) => {
+        if (!(e instanceof KeyboardEvent) || !["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+        e.preventDefault();
+        const dir = e.key === "ArrowRight" ? 1 : -1;
+        const target = (i + dir + tabs.length) % tabs.length;
+        show(target);
+        (tabs[target] as HTMLElement)?.focus();
+      });
+    });
+
+    next?.addEventListener("click", () => show((active + 1) % panels.length));
+    show(0);
+  });
+</script>
