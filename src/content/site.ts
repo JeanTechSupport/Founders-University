@@ -40,7 +40,7 @@ export const showDutch = false;
 export const analytics = {
   // Umami Cloud — FREE + cookieless, works on any host (no DNS change). Recommended.
   // Sign up at cloud.umami.is → Add website → copy the data-website-id (a UUID).
-  umamiWebsiteId: "", // e.g. "12345678-90ab-cdef-1234-567890abcdef"
+  umamiWebsiteId: "38fdef2f-593d-4947-acfe-5a6aa7cbf1df",
   // Cloudflare Web Analytics — also free + cookieless, but its JS-beacon option is
   // buried and tries to make you move DNS to Cloudflare (not worth it just for this).
   cloudflareToken: "",
