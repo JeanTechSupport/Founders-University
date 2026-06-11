@@ -38,8 +38,12 @@ export const showDutch = false;
 // Plausible is cookieless / GDPR-friendly (recommended in the EU — no cookie banner).
 // Google Analytics (GA4) also works but needs a cookie-consent banner in the EU.
 export const analytics = {
-  plausibleDomain: "", // e.g. "founders-university.com"
-  googleAnalyticsId: "", // e.g. "G-XXXXXXXXXX"
+  // Cloudflare Web Analytics — FREE + cookieless (no consent banner). Recommended.
+  // Get a beacon token at dash.cloudflare.com → Web Analytics → Add a site
+  // (use the manual/JS install; you do NOT need to move DNS to Cloudflare).
+  cloudflareToken: "", // e.g. "abc123def456..."
+  plausibleDomain: "", // e.g. "founders-university.com" (Plausible — paid)
+  googleAnalyticsId: "", // e.g. "G-XXXXXXXXXX" (GA4 — needs a cookie banner in the EU)
 };
 
 export const media = {

@@ -114,6 +114,9 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!-- Analytics — opt in via src/content/site.ts (analytics). Off by default. -->
+    {analytics.cloudflareToken && (
+      <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token": "${analytics.cloudflareToken}"}`}></script>
+    )}
     {analytics.plausibleDomain && (
       <script is:inline defer data-domain={analytics.plausibleDomain} src="https://plausible.io/js/script.js"></script>
     )}
