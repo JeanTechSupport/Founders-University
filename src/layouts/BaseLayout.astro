@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { brand, localeSettings, showDutch, v2, type Locale } from "../content/site";
+import { analytics, brand, copy, localeSettings, offer, showDutch, v2, type Locale } from "../content/site";
 
 interface Props {
   locale: Locale;
@@ -12,6 +12,69 @@ const { locale, title, description } = Astro.props;
 const path = locale === "en" ? "/" : "/nl/";
 const altHref = locale === "en" ? "/nl/" : "/";
 const t = v2[locale];
+const c = copy[locale];
+const homeUrl = new URL("/", Astro.site).toString();
+const pageUrl = new URL(path, Astro.site).toString();
+const ogImage = new URL("/og-card.png", Astro.site).toString();
+
+// Schema.org structured data — a strong signal for both search engines and AI
+// answer engines (AEO). Built from the content model so it stays in sync.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": homeUrl + "#organization",
+      name: brand.name,
+      url: homeUrl,
+      logo: ogImage,
+      sameAs: [brand.youtubeUrl, brand.companyUrl],
+    },
+    {
+      "@type": "WebSite",
+      "@id": homeUrl + "#website",
+      url: homeUrl,
+      name: brand.name,
+      description: c.meta.description,
+      inLanguage: localeSettings[locale].lang,
+      publisher: { "@id": homeUrl + "#organization" },
+    },
+    {
+      "@type": "Product",
+      name: brand.name + " — monthly membership",
+      description: c.pricing.body,
+      brand: { "@id": homeUrl + "#organization" },
+      url: pageUrl + "#enrollment",
+      offers: {
+        "@type": "Offer",
+        price: offer.monthlyPrice.replace(/[^\d.]/g, ""),
+        priceCurrency: "EUR",
+        url: offer.checkoutUrl,
+        availability:
+          offer.enrollmentState === "open"
+            ? "https://schema.org/InStock"
+            : "https://schema.org/PreOrder",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": pageUrl + "#faq",
+      mainEntity: c.faq.items.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+    {
+      "@type": "VideoObject",
+      name: c.video.eyebrow,
+      description: c.story.mediaBody,
+      thumbnailUrl: new URL("/kim-thumb.png", Astro.site).toString(),
+      contentUrl: new URL("/kim-message.mp4", Astro.site).toString(),
+      uploadDate: "2026-06-08",
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -30,18 +93,36 @@ const t = v2[locale];
     )}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={brand.name} />
+    <meta property="og:locale" content={locale === "nl" ? "nl_NL" : "en_US"} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={new URL(path, Astro.site)} />
-    <meta property="og:image" content={new URL("/og-card.svg", Astro.site)} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={brand.name} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL("/og-card.svg", Astro.site)} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" href="/favicon-eagle.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/spacegrotesk-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/spacegrotesk-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/Mountain.png" as="image" />
+
+    <!-- Structured data for search + AI answer engines (AEO) -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <!-- Analytics — opt in via src/content/site.ts (analytics). Off by default. -->
+    {analytics.plausibleDomain && (
+      <script is:inline defer data-domain={analytics.plausibleDomain} src="https://plausible.io/js/script.js"></script>
+    )}
+    {analytics.googleAnalyticsId && (
+      <Fragment>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analytics.googleAnalyticsId}`}></script>
+        <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${analytics.googleAnalyticsId}');`} />
+      </Fragment>
+    )}
   </head>
   <body>
     <!-- Intro loader -->

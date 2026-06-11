@@ -17,8 +17,9 @@ export const offer: OfferConfig = {
   billingCadence: { en: "/ month", nl: "/ maand" },
   checkoutUrl: "https://whop.com/checkout/plan_cj8jSLue9jjfn",
   enrollmentState: "open",
-  // Placeholder deadline — set this to the real enrollment/class close date.
-  enrollmentDeadline: "2026-06-15T23:59:59",
+  // Countdown is HIDDEN while this is empty. When Kim confirms the real close
+  // date, set a full ISO timestamp (e.g. "2026-06-15T23:59:59") to show it again.
+  enrollmentDeadline: "",
   youtubeVideoId: "CS1D5EZrDgg",
   cancelAnytime: true,
 };
@@ -32,6 +33,14 @@ export const brand = {
 // English-only for now. The Dutch route + translations are kept as a valuable
 // asset; flip to true to re-show the language switch and index the NL page.
 export const showDutch = false;
+
+// Analytics — OFF by default (nothing loads until you fill one in).
+// Plausible is cookieless / GDPR-friendly (recommended in the EU — no cookie banner).
+// Google Analytics (GA4) also works but needs a cookie-consent banner in the EU.
+export const analytics = {
+  plausibleDomain: "", // e.g. "founders-university.com"
+  googleAnalyticsId: "", // e.g. "G-XXXXXXXXXX"
+};
 
 export const media = {
   heroImageUrl: "/Mountain.png" as string | undefined,

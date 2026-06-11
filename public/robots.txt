@@ -1,0 +1,7 @@
+# Founders University
+# Allow everything (including AI answer-engine crawlers) — the /nl/ page carries
+# its own noindex while Dutch is hidden.
+User-agent: *
+Allow: /
+
+Sitemap: https://founders-university.com/sitemap.xml
