@@ -114,6 +114,9 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!-- Analytics — opt in via src/content/site.ts (analytics). Off by default. -->
+    {analytics.umamiWebsiteId && (
+      <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={analytics.umamiWebsiteId}></script>
+    )}
     {analytics.cloudflareToken && (
       <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token": "${analytics.cloudflareToken}"}`}></script>
     )}

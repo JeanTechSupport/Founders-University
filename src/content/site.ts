@@ -38,12 +38,14 @@ export const showDutch = false;
 // Plausible is cookieless / GDPR-friendly (recommended in the EU — no cookie banner).
 // Google Analytics (GA4) also works but needs a cookie-consent banner in the EU.
 export const analytics = {
-  // Cloudflare Web Analytics — FREE + cookieless (no consent banner). Recommended.
-  // Get a beacon token at dash.cloudflare.com → Web Analytics → Add a site
-  // (use the manual/JS install; you do NOT need to move DNS to Cloudflare).
-  cloudflareToken: "", // e.g. "abc123def456..."
-  plausibleDomain: "", // e.g. "founders-university.com" (Plausible — paid)
-  googleAnalyticsId: "", // e.g. "G-XXXXXXXXXX" (GA4 — needs a cookie banner in the EU)
+  // Umami Cloud — FREE + cookieless, works on any host (no DNS change). Recommended.
+  // Sign up at cloud.umami.is → Add website → copy the data-website-id (a UUID).
+  umamiWebsiteId: "", // e.g. "12345678-90ab-cdef-1234-567890abcdef"
+  // Cloudflare Web Analytics — also free + cookieless, but its JS-beacon option is
+  // buried and tries to make you move DNS to Cloudflare (not worth it just for this).
+  cloudflareToken: "",
+  plausibleDomain: "", // Plausible — paid
+  googleAnalyticsId: "", // GA4 — needs a cookie-consent banner in the EU
 };
 
 export const media = {
