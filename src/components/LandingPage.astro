@@ -285,7 +285,7 @@ const manifestoTokens = manifestoWords.map((w) => {
             </div>
           )
         }
-        <a class="btn btn--block btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer">
+        <a class="btn btn--block btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-umami-event="Checkout" data-umami-event-source="pricing">
           <span>{t.pricing.cta}</span>
         </a>
         {offer.cancelAnytime && <p class="assurance">{t.pricing.assurance}</p>}
@@ -327,7 +327,7 @@ const manifestoTokens = manifestoWords.map((w) => {
   <div class="container">
     <div class="footer__cta" data-reveal>
       <h2>{t.footer.statement}</h2>
-      <a class="btn btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join">
+      <a class="btn btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="footer">
         <span>{t.pricing.cta}</span>
       </a>
     </div>
