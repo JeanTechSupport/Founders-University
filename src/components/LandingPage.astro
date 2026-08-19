@@ -1,5 +1,6 @@
 ---
 import { brand, copy, offer, primaryPlan, showDutch, v2, type Locale } from "../content/site";
+import LiveQaButton from "./LiveQaButton.astro";
 import Lockup from "./Lockup.astro";
 import Hero from "./Hero.astro";
 import Journey from "./Journey.astro";
@@ -53,6 +54,7 @@ const manifestoTokens = manifestoWords.map((w) => {
           <a href="/nl/" lang="nl" hreflang="nl" aria-current={locale === "nl" ? "page" : undefined}>NL</a>
         </nav>
       )}
+      <LiveQaButton locale={locale} />
       <a class="btn" href="#enrollment" data-magnetic="0.35" data-cursor="Start"><span>{t.navigation.cta}</span></a>
     </div>
   </div>
@@ -147,7 +149,7 @@ const manifestoTokens = manifestoWords.map((w) => {
       <!-- Founder portrait placeholder — HIDDEN FOR NOW (kept in code). Re-enable
            by removing `hidden` once a real founder photo is supplied. -->
       <div class="portrait" data-reveal="right" data-parallax="0.06" aria-hidden="true" hidden>
-        <img class="portrait__crest" src="/Founders-university icon.svg" alt="" />
+        <img class="portrait__crest" src="/eagle.svg" alt="" />
         <div class="portrait__plate">
           <span class="portrait__name">{t.story.mediaTitle}</span>
           <span class="portrait__role">{t.story.mediaEyebrow}</span>
@@ -324,6 +326,10 @@ const manifestoTokens = manifestoWords.map((w) => {
       <div class="section-head" data-reveal style="margin-bottom: 0">
         <p class="eyebrow">{t.faq.eyebrow}</p>
         <h2 class="section-title">{t.faq.title}</h2>
+        <div class="faq__live">
+          <p class="faq__live-lead">{t.faq.liveQaLead}</p>
+          <LiveQaButton locale={locale} />
+        </div>
       </div>
       <div class="faq__list" data-reveal="right">
         {
@@ -377,7 +383,7 @@ const manifestoTokens = manifestoWords.map((w) => {
       {x.backToTop}
     </button>
   </div>
-  <img class="footer__crest" src="/Founders-university icon.svg" alt="" aria-hidden="true" />
+  <img class="footer__crest" src="/eagle.svg" alt="" aria-hidden="true" />
 </footer>
 
 <a class="mobile-cta btn btn--block" href="#enrollment"><span>{t.navigation.cta}</span></a>

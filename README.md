@@ -1,6 +1,6 @@
-# Founders University
+# The Disciplined Club
 
-Premium single-page marketing site for Founders University. Static **Astro** site in
+Premium single-page marketing site for The Disciplined Club. Static **Astro** site in
 **TypeScript** — dark editorial theme, a single brass accent, Space Grotesk type, and a
 self-hosted intro video from the founder (Kim). English-only for now; a full Dutch
 translation is built but hidden.
