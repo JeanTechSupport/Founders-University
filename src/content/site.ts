@@ -69,6 +69,14 @@ export const offer: OfferConfig = {
   cancelAnytime: true,
 };
 
+export const liveQa = {
+  /** Point this at the Q&A page once it ships. While it is empty every Live Q&A
+      button renders as a non-interactive "soon" chip rather than a dead link. */
+  url: "",
+  label: { en: "Live Q&A", nl: "Live Q&A" } as Record<Locale, string>,
+  soonLabel: { en: "Soon", nl: "Binnenkort" } as Record<Locale, string>,
+};
+
 /** Plan that every CTA outside the pricing card points at. */
 export const primaryPlan: PlanConfig =
   offer.plans.find((plan) => plan.featured) ?? offer.plans[0];
@@ -200,6 +208,7 @@ interface SiteCopy {
   faq: {
     eyebrow: string;
     title: string;
+    liveQaLead: string;
     items: Array<{ question: string; answer: string }>;
   };
   footer: {
@@ -213,7 +222,7 @@ interface SiteCopy {
 export const copy: Record<Locale, SiteCopy> = {
   en: {
     meta: {
-      title: "The Disciplined Club | Build Online With Direction",
+      title: "Disciplined Club | Build Online With Direction",
       description:
         "The Disciplined Club gives ambitious beginners monthly modules, live guidance and a private community to build online with structure.",
     },
@@ -378,6 +387,7 @@ export const copy: Record<Locale, SiteCopy> = {
     faq: {
       eyebrow: "Frequently asked questions",
       title: "Questions before you begin.",
+      liveQaLead: "Still not sure? Bring it to the weekly live Q&A.",
       items: [
         {
           question: "What exactly do members get?",
@@ -416,7 +426,7 @@ export const copy: Record<Locale, SiteCopy> = {
   },
   nl: {
     meta: {
-      title: "The Disciplined Club | Bouw Online Met Richting",
+      title: "Disciplined Club | Bouw Online Met Richting",
       description:
         "The Disciplined Club geeft ambitieuze beginners maandelijkse modules, live begeleiding en een private community om gestructureerd online te bouwen.",
     },
@@ -581,6 +591,7 @@ export const copy: Record<Locale, SiteCopy> = {
     faq: {
       eyebrow: "Veelgestelde vragen",
       title: "Vragen voordat je begint.",
+      liveQaLead: "Twijfel je nog? Stel je vraag in de wekelijkse live Q&A.",
       items: [
         {
           question: "Wat krijgen leden precies?",

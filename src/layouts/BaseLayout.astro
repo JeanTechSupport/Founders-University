@@ -15,7 +15,7 @@ const t = v2[locale];
 const c = copy[locale];
 const homeUrl = new URL("/", Astro.site).toString();
 const pageUrl = new URL(path, Astro.site).toString();
-const ogImage = new URL("/og-card.png", Astro.site).toString();
+const ogImage = new URL("/og-card-v2.png", Astro.site).toString();
 
 // Schema.org structured data — a strong signal for both search engines and AI
 // answer engines (AEO). Built from the content model so it stays in sync.
@@ -135,7 +135,7 @@ const structuredData = {
   <body>
     <!-- Intro loader -->
     <div class="loader" data-loader aria-hidden="true">
-      <img class="loader__crest" src="/Founders-university icon.svg" alt="" />
+      <img class="loader__crest" src="/eagle.svg" alt="" />
       <span class="loader__word"><span>{t.loaderTagline}</span></span>
       <span class="loader__bar"><span></span></span>
     </div>

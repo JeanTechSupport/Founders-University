@@ -1,4 +1,4 @@
-# Founders University
+# The Disciplined Club
 # Allow everything (including AI answer-engine crawlers) — the /nl/ page carries
 # its own noindex while Dutch is hidden.
 User-agent: *

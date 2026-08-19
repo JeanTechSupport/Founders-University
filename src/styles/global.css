@@ -1,5 +1,5 @@
 /* ============================================================================
-   FOUNDERS UNIVERSITY — "THE ASCENT"
+   THE DISCIPLINED CLUB — "THE ASCENT"
    Dark editorial redesign: clean near-black backgrounds + Space Grotesk type +
    a single brass accent. This is the primary site (loaded on / and /nl/).
    ========================================================================== */
@@ -459,6 +459,28 @@ img {
   background-color: rgba(200, 154, 90, 0.1);
   transform: translateY(-2px);
   box-shadow: none;
+}
+
+/* Live Q&A placeholder — no destination yet, so it must not behave like a link.
+   Declared after .btn--ghost:hover so the inert state wins at equal specificity. */
+.btn--soon {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.btn--soon:hover {
+  border-color: var(--line-strong);
+  background-color: transparent;
+  transform: none;
+}
+
+.btn__soon {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.15em 0.55em;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
 }
 
 .btn--block {
@@ -2050,6 +2072,20 @@ body.v2-ready .hero__cue {
   grid-template-columns: 0.7fr 1fr;
   gap: clamp(2.5rem, 7vw, 6rem);
   align-items: start;
+}
+
+.faq__live {
+  display: flex;
+  gap: 1.1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: clamp(1.8rem, 3.2vw, 2.8rem);
+}
+
+.faq__live-lead {
+  max-width: 30ch;
+  color: var(--muted);
+  font-size: 1rem;
 }
 
 .faq__item {
