@@ -1,9 +1,28 @@
 export type Locale = "en" | "nl";
 
-export interface OfferConfig {
-  monthlyPrice: string;
-  billingCadence: Record<Locale, string>;
+export interface PlanConfig {
+  /** Stable id — styling/analytics hook, never shown to visitors. */
+  id: string;
+  /** Keep matching the Whop plan title so checkout feels continuous. */
+  name: Record<Locale, string>;
+  /** Early-bird price, pre-formatted per locale (NL uses a comma decimal). */
+  price: Record<Locale, string>;
+  /** Regular price, rendered struck through. Omit the field to hide it. */
+  compareAtPrice?: Record<Locale, string>;
+  cadence: Record<Locale, string>;
   checkoutUrl: string;
+  /** Leads the card visually. Exactly one plan should set this. */
+  featured?: boolean;
+  /** Small pill above the price. Omit the field to hide it. */
+  badge?: Record<Locale, string>;
+  /** Saving against the other plan. Omit the field to hide it. */
+  savingsNote?: Record<Locale, string>;
+}
+
+export interface OfferConfig {
+  /** Product name as it reads on the Whop checkout, so the hand-off matches. */
+  productName: string;
+  plans: PlanConfig[];
   enrollmentState: "draft" | "waitlist" | "open";
   /** ISO 8601 date for the enrollment countdown. Leave empty to hide it.
       Use a REAL deadline (cohort close / price rise) — fake timers hurt trust. */
@@ -13,9 +32,35 @@ export interface OfferConfig {
 }
 
 export const offer: OfferConfig = {
-  monthlyPrice: "€49.95",
-  billingCadence: { en: "/ month", nl: "/ maand" },
-  checkoutUrl: "https://whop.com/checkout/plan_cj8jSLue9jjfn",
+  productName: "The Disciplined Club",
+  plans: [
+    {
+      id: "monthly",
+      name: { en: "Early Bird Monthly", nl: "Early Bird Maandelijks" },
+      price: { en: "€94.95", nl: "€94,95" },
+      compareAtPrice: { en: "€118.69", nl: "€118,69" },
+      cadence: { en: "/ month", nl: "/ maand" },
+      checkoutUrl:
+        "https://whop.com/disciplined-by-kim/early-bird-monthly-the-disciplined-club/",
+      // Kim wants the low entry price to draw the clicks. Move `featured` to the
+      // yearly plan to lead with the better per-year value instead.
+      featured: true,
+      badge: { en: "Most popular", nl: "Meest gekozen" },
+    },
+    {
+      id: "yearly",
+      name: { en: "Early Bird Yearly", nl: "Early Bird Jaarlijks" },
+      price: { en: "€1,000", nl: "€1.000" },
+      compareAtPrice: { en: "€1,250", nl: "€1.250" },
+      cadence: { en: "/ year", nl: "/ jaar" },
+      checkoutUrl:
+        "https://whop.com/disciplined-by-kim/early-bird-year-the-disciplined-club/",
+      savingsNote: {
+        en: "Save €139.40 vs paying monthly",
+        nl: "Bespaar €139,40 t.o.v. maandelijks",
+      },
+    },
+  ],
   enrollmentState: "open",
   // Countdown is HIDDEN while this is empty. When Kim confirms the real close
   // date, set a full ISO timestamp (e.g. "2026-06-15T23:59:59") to show it again.
@@ -24,8 +69,15 @@ export const offer: OfferConfig = {
   cancelAnytime: true,
 };
 
+/** Plan that every CTA outside the pricing card points at. */
+export const primaryPlan: PlanConfig =
+  offer.plans.find((plan) => plan.featured) ?? offer.plans[0];
+
 export const brand = {
-  name: "Founders University",
+  name: "The Disciplined Club",
+  /** Two-line lockup set beside the eagle. Kept as text — never outlined into
+      an SVG — so a future rename stays a one-line edit. */
+  wordmark: { lead: "Disciplined", tail: "Club" },
   companyUrl: "https://www.easyscalemedia.com/",
   youtubeUrl: "https://www.youtube.com/@kimchiaretti",
 };
@@ -138,6 +190,8 @@ interface SiteCopy {
     eyebrow: string;
     title: string;
     body: string;
+    plansTitle: string;
+    regularPrice: string;
     includesTitle: string;
     included: string[];
     cta: string;
@@ -159,9 +213,9 @@ interface SiteCopy {
 export const copy: Record<Locale, SiteCopy> = {
   en: {
     meta: {
-      title: "Founders University | Build Online With Direction",
+      title: "The Disciplined Club | Build Online With Direction",
       description:
-        "Founders University gives ambitious beginners monthly modules, live guidance and a private community to build online with structure.",
+        "The Disciplined Club gives ambitious beginners monthly modules, live guidance and a private community to build online with structure.",
     },
     navigation: {
       cta: "Start now",
@@ -179,7 +233,7 @@ export const copy: Record<Locale, SiteCopy> = {
       body: "",
       cta: "Explore membership",
       fallbackCta: "Watch Kim on YouTube",
-      iframeTitle: "Founders University introduction by Kim Chiaretti",
+      iframeTitle: "The Disciplined Club introduction by Kim Chiaretti",
       placeholderTitle: "Autoplay video placeholder",
       placeholderBody: "Choose a YouTube video and it will start here automatically, muted and responsive.",
     },
@@ -189,12 +243,12 @@ export const copy: Record<Locale, SiteCopy> = {
       { value: "500+", label: "e-commerce brands worked with" },
     ],
     story: {
-      eyebrow: "Why Founders University",
+      eyebrow: "Why The Disciplined Club",
       title: "You do not need more noise. You need a direction.",
       paragraphs: [
         "I was working a customer service 9-to-5 with no clear direction for my future. I saw other people build lives online while I stayed stuck, overthinking every move and trying to choose between conflicting opportunities.",
         "Over the last five years, that changed. Together with my brothers Bob and Luca, I helped build Easy Scale Media, a team serving e-commerce brands worldwide, alongside multiple online businesses and a lifestyle grounded in growth and discipline.",
-        "Founders University is the guidance, structure and environment I wish I had when I started.",
+        "The Disciplined Club is the guidance, structure and environment I wish I had when I started.",
       ],
       attribution: "Kim Chiaretti, co-founder",
       mediaEyebrow: "Founded by operators",
@@ -258,7 +312,7 @@ export const copy: Record<Locale, SiteCopy> = {
       eyebrow: "Your first 30 days",
       title: "Turn intention into weekly momentum.",
       body:
-        "Explore a realistic first month inside Founders University. Tap each stage to see how learning becomes action.",
+        "Explore a realistic first month inside The Disciplined Club. Tap each stage to see how learning becomes action.",
       navigationLabel: "Explore your first month",
       nextLabel: "Next step",
       cta: "Start your journey",
@@ -308,7 +362,9 @@ export const copy: Record<Locale, SiteCopy> = {
     pricing: {
       eyebrow: "Start your journey today",
       title: "Everything you need to start building online.",
-      body: "Join Founders University and build with guidance every week.",
+      body: "Join The Disciplined Club and build with guidance every week.",
+      plansTitle: "Choose your plan",
+      regularPrice: "Regular price",
       includesTitle: "Your membership includes",
       included: [
         "Monthly growth modules",
@@ -346,23 +402,23 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "What makes this different from other courses?",
           answer:
-            "Information alone rarely creates progress. Founders University combines content with weekly guidance, accountability and a community of people committed to taking action.",
+            "Information alone rarely creates progress. The Disciplined Club combines content with weekly guidance, accountability and a community of people committed to taking action.",
         },
       ],
     },
     footer: {
       statement: "Build what matters. Become who it requires.",
       disclaimer:
-        "Individual results vary. Founders University provides education and community support; it does not guarantee earnings or business outcomes.",
+        "Individual results vary. The Disciplined Club provides education and community support; it does not guarantee earnings or business outcomes.",
       companyLink: "Easy Scale Media",
       youtubeLink: "Kim on YouTube",
     },
   },
   nl: {
     meta: {
-      title: "Founders University | Bouw Online Met Richting",
+      title: "The Disciplined Club | Bouw Online Met Richting",
       description:
-        "Founders University geeft ambitieuze beginners maandelijkse modules, live begeleiding en een private community om gestructureerd online te bouwen.",
+        "The Disciplined Club geeft ambitieuze beginners maandelijkse modules, live begeleiding en een private community om gestructureerd online te bouwen.",
     },
     navigation: {
       cta: "Start nu",
@@ -380,7 +436,7 @@ export const copy: Record<Locale, SiteCopy> = {
       body: "",
       cta: "Bekijk het lidmaatschap",
       fallbackCta: "Bekijk Kim op YouTube",
-      iframeTitle: "Founders University introductie door Kim Chiaretti",
+      iframeTitle: "The Disciplined Club introductie door Kim Chiaretti",
       placeholderTitle: "Placeholder voor autoplay-video",
       placeholderBody: "Kies een YouTube-video en deze start hier automatisch, gedempt en responsive.",
     },
@@ -390,12 +446,12 @@ export const copy: Record<Locale, SiteCopy> = {
       { value: "500+", label: "e-commerce merken ondersteund" },
     ],
     story: {
-      eyebrow: "Waarom Founders University",
+      eyebrow: "Waarom The Disciplined Club",
       title: "Je hebt geen extra ruis nodig. Je hebt richting nodig.",
       paragraphs: [
         "Ik werkte in een klantenservicebaan van negen tot vijf, zonder helder beeld van mijn toekomst. Terwijl anderen online hun leven opbouwden, bleef ik vastzitten in twijfel en tegenstrijdige mogelijkheden.",
         "De afgelopen vijf jaar veranderde dat. Samen met mijn broers Bob en Luca bouwde ik mee aan Easy Scale Media, een team dat e-commerce merken wereldwijd ondersteunt, naast meerdere online bedrijven en een leven gericht op groei en discipline.",
-        "Founders University is de begeleiding, structuur en omgeving die ik zelf had willen hebben toen ik begon.",
+        "The Disciplined Club is de begeleiding, structuur en omgeving die ik zelf had willen hebben toen ik begon.",
       ],
       attribution: "Kim Chiaretti, medeoprichter",
       mediaEyebrow: "Opgericht door ondernemers",
@@ -459,7 +515,7 @@ export const copy: Record<Locale, SiteCopy> = {
       eyebrow: "Je eerste 30 dagen",
       title: "Maak van intentie wekelijks momentum.",
       body:
-        "Verken een realistische eerste maand binnen Founders University. Tik op elke fase om te zien hoe leren actie wordt.",
+        "Verken een realistische eerste maand binnen The Disciplined Club. Tik op elke fase om te zien hoe leren actie wordt.",
       navigationLabel: "Verken je eerste maand",
       nextLabel: "Volgende stap",
       cta: "Start je reis",
@@ -509,7 +565,9 @@ export const copy: Record<Locale, SiteCopy> = {
     pricing: {
       eyebrow: "Start vandaag jouw reis",
       title: "Alles wat je nodig hebt om online te beginnen bouwen.",
-      body: "Word lid van Founders University en bouw iedere week met begeleiding.",
+      body: "Word lid van The Disciplined Club en bouw iedere week met begeleiding.",
+      plansTitle: "Kies je plan",
+      regularPrice: "Normale prijs",
       includesTitle: "Je lidmaatschap bevat",
       included: [
         "Maandelijkse groeimodules",
@@ -547,14 +605,14 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "Wat maakt dit anders dan andere cursussen?",
           answer:
-            "Informatie alleen leidt zelden tot vooruitgang. Founders University combineert content met wekelijkse begeleiding, verantwoordelijkheid en een community die actie wil nemen.",
+            "Informatie alleen leidt zelden tot vooruitgang. The Disciplined Club combineert content met wekelijkse begeleiding, verantwoordelijkheid en een community die actie wil nemen.",
         },
       ],
     },
     footer: {
       statement: "Bouw wat telt. Word wie daarvoor nodig is.",
       disclaimer:
-        "Individuele resultaten verschillen. Founders University biedt educatie en community-ondersteuning; het garandeert geen inkomen of zakelijke resultaten.",
+        "Individuele resultaten verschillen. The Disciplined Club biedt educatie en community-ondersteuning; het garandeert geen inkomen of zakelijke resultaten.",
       companyLink: "Easy Scale Media",
       youtubeLink: "Kim op YouTube",
     },
@@ -620,7 +678,7 @@ export const v2: Record<Locale, V2Copy> = {
         },
       ],
     },
-    storyRole: "Co-founder, Founders University",
+    storyRole: "Co-founder, The Disciplined Club",
     sectionLabels: [
       "Basecamp",
       "From Kim",
@@ -674,7 +732,7 @@ export const v2: Record<Locale, V2Copy> = {
         },
       ],
     },
-    storyRole: "Medeoprichter, Founders University",
+    storyRole: "Medeoprichter, The Disciplined Club",
     sectionLabels: [
       "Basiskamp",
       "Van Kim",

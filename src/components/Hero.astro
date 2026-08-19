@@ -1,5 +1,6 @@
 ---
 import { copy, media, v2, type Locale } from "../content/site";
+import Lockup from "./Lockup.astro";
 
 interface Props {
   locale: Locale;
@@ -36,7 +37,7 @@ const breakAfter = hero.titleLead.split(" ").length;
 
     <div class="hero__content">
       <div class="hero__crest">
-        <img src="/FOUNDERS-UNIVERSITY.svg" alt="Founders University" />
+        <Lockup size="lg" />
       </div>
       <h1>
         {
