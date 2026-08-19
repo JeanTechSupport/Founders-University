@@ -67,14 +67,6 @@ const structuredData = {
         acceptedAnswer: { "@type": "Answer", text: item.answer },
       })),
     },
-    {
-      "@type": "VideoObject",
-      name: c.video.eyebrow,
-      description: c.story.mediaBody,
-      thumbnailUrl: new URL("/kim-thumb.png", Astro.site).toString(),
-      contentUrl: new URL("/kim-message.mp4", Astro.site).toString(),
-      uploadDate: "2026-06-08",
-    },
   ],
 };
 ---
@@ -107,7 +99,7 @@ const structuredData = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <link rel="icon" href="/favicon-eagle.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/spacegrotesk-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/spacegrotesk-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/Mountain.png" as="image" />
@@ -135,7 +127,6 @@ const structuredData = {
   <body>
     <!-- Intro loader -->
     <div class="loader" data-loader aria-hidden="true">
-      <img class="loader__crest" src="/eagle.svg" alt="" />
       <span class="loader__word"><span>{t.loaderTagline}</span></span>
       <span class="loader__bar"><span></span></span>
     </div>
@@ -314,30 +305,6 @@ const structuredData = {
       addEventListener("resize", onScroll);
       update();
 
-      /* ---- Manifesto: auto-play the word-fill when it enters view -------- */
-      const manifesto = document.querySelector(".manifesto");
-      if (manifesto) {
-        const words = Array.from(manifesto.querySelectorAll(".mword"));
-        const play = () => {
-          if (reduce) {
-            words.forEach((w) => w.classList.add("is-lit"));
-            return;
-          }
-          words.forEach((w, i) => window.setTimeout(() => w.classList.add("is-lit"), i * 95));
-        };
-        const mIO = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((en) => {
-              if (en.isIntersecting) {
-                play();
-                mIO.disconnect();
-              }
-            });
-          },
-          { threshold: 0.35 },
-        );
-        mIO.observe(manifesto);
-      }
 
       /* ---- Countdown to a real deadline --------------------------------- */
       document.querySelectorAll("[data-countdown]").forEach((el) => {

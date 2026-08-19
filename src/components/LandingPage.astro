@@ -1,6 +1,5 @@
 ---
 import { brand, copy, offer, primaryPlan, showDutch, v2, type Locale } from "../content/site";
-import LiveQaButton from "./LiveQaButton.astro";
 import Lockup from "./Lockup.astro";
 import Hero from "./Hero.astro";
 import Journey from "./Journey.astro";
@@ -15,14 +14,11 @@ const t = copy[locale];
 const x = v2[locale];
 const year = new Date().getFullYear();
 
-// Rail order follows the visible scroll order. "in-motion" was moved to the
-// bottom of the page; the proof band sits between "the-founder" and "the-story"
-// without its own rail entry.
+// Rail order follows the visible scroll order. Keep this list and
+// v2.sectionLabels the same length — the rail zips them together.
 const ids = [
   "basecamp",
-  "the-founder",
   "the-reason",
-  "the-story",
   "inside",
   "first-30",
   "principles",
@@ -32,13 +28,6 @@ const ids = [
   "in-motion",
 ];
 
-// Manifesto split into words; em-dash clause becomes the brass accent.
-const manifestoWords = x.manifesto.split(" ");
-let accentActive = false;
-const manifestoTokens = manifestoWords.map((w) => {
-  if (w === "—") accentActive = true;
-  return { w, accent: accentActive };
-});
 ---
 
 <!-- Header -->
@@ -54,7 +43,6 @@ const manifestoTokens = manifestoWords.map((w) => {
           <a href="/nl/" lang="nl" hreflang="nl" aria-current={locale === "nl" ? "page" : undefined}>NL</a>
         </nav>
       )}
-      <LiveQaButton locale={locale} />
       <a class="btn" href="#enrollment" data-magnetic="0.35" data-cursor="Start"><span>{t.navigation.cta}</span></a>
     </div>
   </div>
@@ -75,84 +63,26 @@ const manifestoTokens = manifestoWords.map((w) => {
 <main>
   <Hero locale={locale} />
 
-  <!-- A special message from Kim — self-hosted video (8-bit SDR, web-safe) -->
-  <section class="section section-dark" id="the-founder" data-altitude>
-    <div class="container founder">
-      <div class="section-head founder__head" data-reveal>
-        <p class="eyebrow">{t.video.eyebrow}</p>
-        {t.video.title && <h2 class="section-title">{t.video.title}</h2>}
-      </div>
-      <div class="video-player" data-reveal="scale" data-video-player>
-        <video
-          class="video-player__el"
-          playsinline
-          preload="metadata"
-          poster="/kim-thumb.png"
-          aria-label={t.video.iframeTitle}
-        >
-          <source src="/kim-message.mp4" type="video/mp4" />
-        </video>
-        <button class="video-player__start" type="button" data-video-start aria-label={t.video.iframeTitle}></button>
-        <button class="video-player__replay" type="button" data-video-replay hidden>↻ Play again</button>
-      </div>
-      <div class="founder__cta" data-reveal>
-        <a class="btn btn--ghost" href="#enrollment" data-magnetic="0.3" data-cursor="Explore"><span>{t.video.cta}</span></a>
-      </div>
-    </div>
-  </section>
-
   <!-- Manifesto -->
   <section class="manifesto" id="the-reason" data-altitude>
     <div class="manifesto__sticky">
       <div class="manifesto__inner">
         <p class="eyebrow">{x.manifestoEyebrow}</p>
-        <p class="manifesto__text">
-          {
-            manifestoTokens.map((tok) => (
-              <>
-                <span class:list={["mword", { "is-accent": tok.accent }]}>{tok.w}</span>{" "}
-              </>
-            ))
-          }
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Proof stats — split out of the (hidden) founder section so they stay visible -->
-  <section class="section section-dark proof-section">
-    <div class="container">
-      <div class="proof">
         {
-          t.proof.map((item, i) => (
-            <div class="proof__item" data-reveal style={`--i: ${i}`}>
-              <span class="proof__value" data-count={item.value}>
-                {item.value}
-              </span>
-              <span class="proof__label">{item.label}</span>
-            </div>
+          x.manifesto.map((para, i) => (
+            <p
+              class:list={["manifesto__text", { "manifesto__text--lead": i === 0 }]}
+              data-reveal
+              style={`--i: ${i}`}
+            >
+              {para}
+            </p>
           ))
         }
-      </div>
-    </div>
-  </section>
-
-  <!-- Story -->
-  <section class="section section-paper" id="the-story" data-altitude>
-    <div class="container story__grid">
-      <div class="story__copy" data-reveal>
-        <p class="eyebrow">{t.story.eyebrow}</p>
-        <h2>{t.story.title}</h2>
-        {t.story.paragraphs.map((p) => <p>{p}</p>)}
-        <p class="story__attribution">{t.story.attribution}</p>
-      </div>
-      <!-- Founder portrait placeholder — HIDDEN FOR NOW (kept in code). Re-enable
-           by removing `hidden` once a real founder photo is supplied. -->
-      <div class="portrait" data-reveal="right" data-parallax="0.06" aria-hidden="true" hidden>
-        <img class="portrait__crest" src="/eagle.svg" alt="" />
-        <div class="portrait__plate">
-          <span class="portrait__name">{t.story.mediaTitle}</span>
-          <span class="portrait__role">{t.story.mediaEyebrow}</span>
+        <div class="manifesto__cta" data-reveal>
+          <a class="btn btn--ghost" href="#enrollment" data-magnetic="0.3" data-cursor="Explore">
+            <span>{t.navigation.cta}</span>
+          </a>
         </div>
       </div>
     </div>
@@ -315,7 +245,6 @@ const manifestoTokens = manifestoWords.map((w) => {
             </div>
           )
         }
-        {offer.cancelAnytime && <p class="assurance">{t.pricing.assurance}</p>}
       </article>
     </div>
   </section>
@@ -327,10 +256,6 @@ const manifestoTokens = manifestoWords.map((w) => {
         <p class="eyebrow">{t.faq.eyebrow}</p>
         <h2 class="section-title">{t.faq.title}</h2>
         <div class="faq__live">
-          <p class="faq__live-lead">{t.faq.liveQaLead}</p>
-          <LiveQaButton locale={locale} />
-        </div>
-      </div>
       <div class="faq__list" data-reveal="right">
         {
           t.faq.items.map((item, i) => (
@@ -367,7 +292,7 @@ const manifestoTokens = manifestoWords.map((w) => {
         <a class="wordmark wordmark--lg" href={locale === "en" ? "/" : "/nl/"} aria-label={brand.name}>
           <Lockup size="md" />
         </a>
-        <p class="footer__statement">{t.story.mediaBody}</p>
+        <p class="footer__statement">{t.footer.blurb}</p>
       </div>
       <div class="footer__meta">
         <div class="footer__links">
@@ -383,40 +308,8 @@ const manifestoTokens = manifestoWords.map((w) => {
       {x.backToTop}
     </button>
   </div>
-  <img class="footer__crest" src="/eagle.svg" alt="" aria-hidden="true" />
 </footer>
 
 <a class="mobile-cta btn btn--block" href="#enrollment"><span>{t.navigation.cta}</span></a>
 
-<script>
-  /* "A special message from Kim" — Kim's thumbnail is a click-to-play poster
-     (play button + title baked in). Click plays with sound; "Play again" on end. */
-  const player = document.querySelector("[data-video-player]");
-  const vid = player?.querySelector(".video-player__el");
-  const startBtn = player?.querySelector("[data-video-start]");
-  const replayBtn = player?.querySelector("[data-video-replay]");
 
-  if (player instanceof HTMLElement && vid instanceof HTMLVideoElement) {
-    const begin = () => {
-      player.classList.remove("is-ended");
-      if (startBtn instanceof HTMLElement) startBtn.hidden = true;
-      if (replayBtn instanceof HTMLElement) replayBtn.hidden = true;
-      vid.controls = true;
-      vid.muted = false;
-      vid.play().catch(() => {});
-    };
-
-    startBtn?.addEventListener("click", begin);
-
-    replayBtn?.addEventListener("click", () => {
-      vid.currentTime = 0;
-      begin();
-    });
-
-    vid.addEventListener("ended", () => {
-      player.classList.add("is-ended");
-      vid.controls = false;
-      if (replayBtn instanceof HTMLElement) replayBtn.hidden = false;
-    });
-  }
-</script>
