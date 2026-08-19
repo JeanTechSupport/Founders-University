@@ -28,7 +28,6 @@ export interface OfferConfig {
       Use a REAL deadline (cohort close / price rise) — fake timers hurt trust. */
   enrollmentDeadline?: string;
   youtubeVideoId?: string;
-  cancelAnytime: boolean;
 }
 
 export const offer: OfferConfig = {
@@ -66,15 +65,6 @@ export const offer: OfferConfig = {
   // date, set a full ISO timestamp (e.g. "2026-06-15T23:59:59") to show it again.
   enrollmentDeadline: "",
   youtubeVideoId: "CS1D5EZrDgg",
-  cancelAnytime: true,
-};
-
-export const liveQa = {
-  /** Point this at the Q&A page once it ships. While it is empty every Live Q&A
-      button renders as a non-interactive "soon" chip rather than a dead link. */
-  url: "",
-  label: { en: "Live Q&A", nl: "Live Q&A" } as Record<Locale, string>,
-  soonLabel: { en: "Soon", nl: "Binnenkort" } as Record<Locale, string>,
 };
 
 /** Plan that every CTA outside the pricing card points at. */
@@ -112,16 +102,16 @@ export const media = {
   heroImageUrl: "/Mountain.png" as string | undefined,
   motionVideos: [
     {
-      id: "LJlXCLT0-LY",
-      title: "The Real Reason Your Life Hasn't Changed Yet",
+      id: "U60GAKeFNCk",
+      title: "Q&A: How I Actually Went From Broke to Where I Am Now",
     },
     {
-      id: "kBT0ncfEisY",
-      title: "How to Make Your Team Actually Respect You (Not Just Fear You)",
+      id: "RXuHNNu-WyU",
+      title: "I Used to Be Broke. Here's What My Day Actually Looks Like Now",
     },
     {
-      id: "r_1GjBdkD-c",
-      title: "Why Most Businesses Fail to Scale (And How to Avoid It)",
+      id: "bXLWloYWBTo",
+      title: "If I was broke in my 20's, here's the system I would build",
     },
   ],
 };
@@ -142,27 +132,6 @@ interface SiteCopy {
     titleEmphasis: string;
     titleTail: string;
     imageAlt: string;
-  };
-  video: {
-    eyebrow: string;
-    title: string;
-    body: string;
-    cta: string;
-    fallbackCta: string;
-    iframeTitle: string;
-    placeholderTitle: string;
-    placeholderBody: string;
-  };
-  proof: Array<{ value: string; label: string }>;
-  story: {
-    eyebrow: string;
-    title: string;
-    paragraphs: string[];
-    attribution: string;
-    mediaEyebrow: string;
-    mediaTitle: string;
-    mediaBody: string;
-    founders: string[];
   };
   motion: {
     eyebrow: string;
@@ -203,16 +172,15 @@ interface SiteCopy {
     includesTitle: string;
     included: string[];
     cta: string;
-    assurance: string;
   };
   faq: {
     eyebrow: string;
     title: string;
-    liveQaLead: string;
     items: Array<{ question: string; answer: string }>;
   };
   footer: {
     statement: string;
+    blurb: string;
     disclaimer: string;
     companyLink: string;
     youtubeLink: string;
@@ -222,7 +190,7 @@ interface SiteCopy {
 export const copy: Record<Locale, SiteCopy> = {
   en: {
     meta: {
-      title: "Disciplined Club | Build Online With Direction",
+      title: "Disciplined Club",
       description:
         "The Disciplined Club gives ambitious beginners monthly modules, live guidance and a private community to build online with structure.",
     },
@@ -235,36 +203,6 @@ export const copy: Record<Locale, SiteCopy> = {
       titleEmphasis: "holding you",
       titleTail: "back?",
       imageAlt: "Mountain peak rising above a sea of clouds.",
-    },
-    video: {
-      eyebrow: "A special message from Kim",
-      title: "",
-      body: "",
-      cta: "Explore membership",
-      fallbackCta: "Watch Kim on YouTube",
-      iframeTitle: "The Disciplined Club introduction by Kim Chiaretti",
-      placeholderTitle: "Autoplay video placeholder",
-      placeholderBody: "Choose a YouTube video and it will start here automatically, muted and responsive.",
-    },
-    proof: [
-      { value: "5+", label: "years building businesses online" },
-      { value: "35+", label: "people in the team" },
-      { value: "500+", label: "e-commerce brands worked with" },
-    ],
-    story: {
-      eyebrow: "Why The Disciplined Club",
-      title: "You do not need more noise. You need a direction.",
-      paragraphs: [
-        "I was working a customer service 9-to-5 with no clear direction for my future. I saw other people build lives online while I stayed stuck, overthinking every move and trying to choose between conflicting opportunities.",
-        "Over the last five years, that changed. Together with my brothers Bob and Luca, I helped build Easy Scale Media, a team serving e-commerce brands worldwide, alongside multiple online businesses and a lifestyle grounded in growth and discipline.",
-        "The Disciplined Club is the guidance, structure and environment I wish I had when I started.",
-      ],
-      attribution: "Kim Chiaretti, co-founder",
-      mediaEyebrow: "Founded by operators",
-      mediaTitle: "Kim, Bob & Luca Chiaretti",
-      mediaBody:
-        "The founders behind Easy Scale Media bring real-world business experience into a community built for your next step.",
-      founders: ["KIM", "BOB", "LUCA"],
     },
     motion: {
       eyebrow: "Kim in motion",
@@ -382,12 +320,10 @@ export const copy: Record<Locale, SiteCopy> = {
         "Guidance, discipline and structure",
       ],
       cta: "Start now",
-      assurance: "No contracts. Cancel anytime.",
     },
     faq: {
       eyebrow: "Frequently asked questions",
       title: "Questions before you begin.",
-      liveQaLead: "Still not sure? Bring it to the weekly live Q&A.",
       items: [
         {
           question: "What exactly do members get?",
@@ -418,6 +354,8 @@ export const copy: Record<Locale, SiteCopy> = {
     },
     footer: {
       statement: "Build what matters. Become who it requires.",
+      blurb:
+        "a private community of people building the same discipline, with a new module every month and a weekly live q&a.",
       disclaimer:
         "Individual results vary. The Disciplined Club provides education and community support; it does not guarantee earnings or business outcomes.",
       companyLink: "Easy Scale Media",
@@ -426,7 +364,7 @@ export const copy: Record<Locale, SiteCopy> = {
   },
   nl: {
     meta: {
-      title: "Disciplined Club | Bouw Online Met Richting",
+      title: "Disciplined Club",
       description:
         "The Disciplined Club geeft ambitieuze beginners maandelijkse modules, live begeleiding en een private community om gestructureerd online te bouwen.",
     },
@@ -439,36 +377,6 @@ export const copy: Record<Locale, SiteCopy> = {
       titleEmphasis: "jou nog",
       titleTail: "tegen?",
       imageAlt: "Bergtop die boven een zee van wolken uitsteekt.",
-    },
-    video: {
-      eyebrow: "Een speciale boodschap van Kim",
-      title: "",
-      body: "",
-      cta: "Bekijk het lidmaatschap",
-      fallbackCta: "Bekijk Kim op YouTube",
-      iframeTitle: "The Disciplined Club introductie door Kim Chiaretti",
-      placeholderTitle: "Placeholder voor autoplay-video",
-      placeholderBody: "Kies een YouTube-video en deze start hier automatisch, gedempt en responsive.",
-    },
-    proof: [
-      { value: "5+", label: "jaar online bedrijven gebouwd" },
-      { value: "35+", label: "mensen in het team" },
-      { value: "500+", label: "e-commerce merken ondersteund" },
-    ],
-    story: {
-      eyebrow: "Waarom The Disciplined Club",
-      title: "Je hebt geen extra ruis nodig. Je hebt richting nodig.",
-      paragraphs: [
-        "Ik werkte in een klantenservicebaan van negen tot vijf, zonder helder beeld van mijn toekomst. Terwijl anderen online hun leven opbouwden, bleef ik vastzitten in twijfel en tegenstrijdige mogelijkheden.",
-        "De afgelopen vijf jaar veranderde dat. Samen met mijn broers Bob en Luca bouwde ik mee aan Easy Scale Media, een team dat e-commerce merken wereldwijd ondersteunt, naast meerdere online bedrijven en een leven gericht op groei en discipline.",
-        "The Disciplined Club is de begeleiding, structuur en omgeving die ik zelf had willen hebben toen ik begon.",
-      ],
-      attribution: "Kim Chiaretti, medeoprichter",
-      mediaEyebrow: "Opgericht door ondernemers",
-      mediaTitle: "Kim, Bob & Luca Chiaretti",
-      mediaBody:
-        "De founders achter Easy Scale Media brengen echte bedrijfservaring naar een community voor jouw volgende stap.",
-      founders: ["KIM", "BOB", "LUCA"],
     },
     motion: {
       eyebrow: "Kim in beweging",
@@ -586,12 +494,10 @@ export const copy: Record<Locale, SiteCopy> = {
         "Begeleiding, discipline en structuur",
       ],
       cta: "Start nu",
-      assurance: "Geen contract. Altijd opzegbaar.",
     },
     faq: {
       eyebrow: "Veelgestelde vragen",
       title: "Vragen voordat je begint.",
-      liveQaLead: "Twijfel je nog? Stel je vraag in de wekelijkse live Q&A.",
       items: [
         {
           question: "Wat krijgen leden precies?",
@@ -622,6 +528,8 @@ export const copy: Record<Locale, SiteCopy> = {
     },
     footer: {
       statement: "Bouw wat telt. Word wie daarvoor nodig is.",
+      blurb:
+        "een private community van mensen die dezelfde discipline bouwen, met elke maand een nieuwe module en een wekelijkse live q&a.",
       disclaimer:
         "Individuele resultaten verschillen. The Disciplined Club biedt educatie en community-ondersteuning; het garandeert geen inkomen of zakelijke resultaten.",
       companyLink: "Easy Scale Media",
@@ -639,7 +547,7 @@ export interface V2Copy {
   loaderTagline: string;
   scrollCue: string;
   manifestoEyebrow: string;
-  manifesto: string;
+  manifesto: string[];
   ethos: {
     eyebrow: string;
     title: string;
@@ -665,8 +573,12 @@ export const v2: Record<Locale, V2Copy> = {
     loaderTagline: "Begin the ascent",
     scrollCue: "Scroll to begin",
     manifestoEyebrow: "Why this exists",
-    manifesto:
-      "You are not behind. You are missing the environment that makes building inevitable — the room, the rhythm, and the people who refuse to let you drift.",
+    manifesto: [
+      "you are not behind. you are undisciplined.",
+      "that's the missing piece. not the room, not the timing, not the people around you — the decision to show up when you don't feel like it.",
+      "and here's the part no one tells you: you already know this. you've known it for months. you've made the same promise to yourself on a sunday night a hundred times. and by wednesday you're back to the same version of you.",
+      "that's not a motivation problem. that's a structure problem. you don't have a system that makes discipline the default instead of the exception.",
+    ],
     ethos: {
       eyebrow: "What we stand for",
       title: "Principles, not promises.",
@@ -684,17 +596,15 @@ export const v2: Record<Locale, V2Copy> = {
           body: "One path tested beats ten tabs open. We help you choose, then commit.",
         },
         {
-          title: "Operators, not gurus",
-          body: "Built by the team behind Easy Scale Media — people who run real businesses, not a course about courses.",
+          title: "A room, not an audience",
+          body: "Nobody here is performing discipline at you. Everyone is running the same modules and showing up to the same weekly call.",
         },
       ],
     },
     storyRole: "Co-founder, The Disciplined Club",
     sectionLabels: [
       "Basecamp",
-      "From Kim",
       "The reason",
-      "The story",
       "Inside",
       "First 30 days",
       "Principles",
@@ -719,8 +629,12 @@ export const v2: Record<Locale, V2Copy> = {
     loaderTagline: "Begin de klim",
     scrollCue: "Scroll om te beginnen",
     manifestoEyebrow: "Waarom dit bestaat",
-    manifesto:
-      "Je loopt niet achter. Je mist de omgeving die bouwen onvermijdelijk maakt — de ruimte, het ritme en de mensen die je niet laten afdwalen.",
+    manifesto: [
+      "je loopt niet achter. je bent ongedisciplineerd.",
+      "dat is het ontbrekende stuk. niet de ruimte, niet de timing, niet de mensen om je heen — de keuze om op te komen dagen als je er geen zin in hebt.",
+      "en dit vertelt niemand je: je weet dit al. je weet het al maanden. je hebt jezelf op een zondagavond honderd keer dezelfde belofte gedaan. en woensdag ben je terug bij dezelfde versie van jezelf.",
+      "dat is geen motivatieprobleem. dat is een structuurprobleem. je hebt geen systeem dat discipline de standaard maakt in plaats van de uitzondering.",
+    ],
     ethos: {
       eyebrow: "Waar we voor staan",
       title: "Principes, geen beloftes.",
@@ -738,17 +652,15 @@ export const v2: Record<Locale, V2Copy> = {
           body: "Eén pad getest verslaat tien tabbladen open. Wij helpen je kiezen en doorzetten.",
         },
         {
-          title: "Ondernemers, geen goeroes",
-          body: "Gebouwd door het team achter Easy Scale Media — mensen met echte bedrijven, geen cursus over cursussen.",
+          title: "Een ruimte, geen publiek",
+          body: "Niemand speelt hier discipline voor je. Iedereen draait dezelfde modules en komt naar dezelfde wekelijkse call.",
         },
       ],
     },
     storyRole: "Medeoprichter, The Disciplined Club",
     sectionLabels: [
       "Basiskamp",
-      "Van Kim",
       "De reden",
-      "Het verhaal",
       "Binnenin",
       "Eerste 30 dagen",
       "Principes",

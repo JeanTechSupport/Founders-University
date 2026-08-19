@@ -168,59 +168,45 @@ img {
   white-space: nowrap;
 }
 
-/* Brand lockup — eagle plus the name as live text, so a rename is a config edit
-   rather than new vector artwork. */
+/* Brand lockup — wordmark only, matching the supplied logo: DISCIPLINED over a
+   smaller, widely tracked CLUB. Kept as live text rather than outlined artwork,
+   so a rename stays a config edit. */
 .lockup {
   display: inline-flex;
-  gap: 0.5em;
-  align-items: center;
+  gap: 0.34em;
   flex-direction: column;
+  align-items: center;
   line-height: 1;
   color: inherit;
 }
 
 .lockup--row {
-  flex-direction: row;
-  gap: 0.6em;
+  gap: 0.22em;
+  align-items: flex-start;
 }
-
-.lockup__mark {
-  width: auto;
-  height: 2.5em;
-  /* Brand artwork is black; invert to white for the dark theme. */
-  filter: invert(1) brightness(1.05);
-}
-
-.lockup__name {
-  display: flex;
-  gap: 0.3em;
-  flex-direction: column;
-  align-items: center;
-}
-
-.lockup--row .lockup__name { align-items: flex-start; }
 
 .lockup__lead {
   font-family: var(--font-display);
   font-size: 1.5em;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.17em;
+  text-indent: 0.17em;
   text-transform: uppercase;
 }
 
 .lockup__tail {
   font-family: var(--font-display);
-  font-size: 0.52em;
+  font-size: 0.62em;
   font-weight: 500;
-  letter-spacing: 0.58em;
-  text-indent: 0.58em;
+  letter-spacing: 0.52em;
+  text-indent: 0.52em;
   text-transform: uppercase;
-  opacity: 0.72;
+  opacity: 0.75;
 }
 
-.lockup--sm { font-size: 0.8rem; }
-.lockup--md { font-size: 1.05rem; }
-.lockup--lg { font-size: clamp(1.05rem, 2vw, 1.55rem); }
+.lockup--sm { font-size: 0.78rem; }
+.lockup--md { font-size: 1rem; }
+.lockup--lg { font-size: clamp(1rem, 1.9vw, 1.5rem); }
 
 
 
@@ -867,28 +853,34 @@ body.v2-ready .hero__cue {
   margin: 0 auto;
 }
 
+.manifesto__cta {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+/* The opening line is the hook — it carries the section on its own. */
 .manifesto__text {
-  max-width: 22ch;
+  max-width: 46ch;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 4.2rem);
+  font-size: clamp(1.05rem, 1.7vw, 1.32rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--muted-on-dark);
+}
+
+.manifesto__text + .manifesto__text {
+  margin-top: 1.15em;
+}
+
+.manifesto__text--lead {
+  max-width: 20ch;
+  margin-bottom: 0.55em;
+  font-size: clamp(2rem, 4.6vw, 3.6rem);
   font-weight: 600;
-  line-height: 1.16;
+  line-height: 1.14;
   letter-spacing: -0.028em;
+  color: var(--on-dark);
 }
 
-.manifesto__text .mword {
-  color: rgba(245, 240, 230, 0.16);
-  transition: color 0.45s ease;
-}
-
-.manifesto__text .mword.is-lit {
-  color: var(--ink);
-}
-
-.manifesto__text .mword.is-accent.is-lit {
-  color: var(--brass-bright);
-  font-style: italic;
-}
 
 /* ============================================================================
    VIDEO INTRO + PROOF COUNTERS
@@ -2381,7 +2373,7 @@ body.v2-ready .hero__cue {
 
   .fit__grid { grid-template-columns: 1fr; }
 
-  .manifesto__text { font-size: clamp(1.7rem, 7.5vw, 2.6rem); }
+  .manifesto__text--lead { font-size: clamp(1.7rem, 7.5vw, 2.6rem); }
 
   .mobile-cta { display: flex; }
   .v2-footer { padding-bottom: 6.5rem; }
@@ -2405,9 +2397,7 @@ body.v2-ready .hero__cue {
   .hero { height: auto; }
   .hero__sticky { position: relative; height: 100svh; }
   .hero h1 .word > span { transform: none; }
-  .manifesto__text .mword { color: var(--ink); }
-  .manifesto__text .mword.is-accent { color: var(--brass-deep); }
-  .carousel__track { transition: none; }
+      .carousel__track { transition: none; }
   .btn { animation: none; }
   .btn::before { animation: none; }
 }
