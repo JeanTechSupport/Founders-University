@@ -41,20 +41,22 @@ const structuredData = {
     },
     {
       "@type": "Product",
-      name: brand.name + " — monthly membership",
+      name: offer.productName,
       description: c.pricing.body,
       brand: { "@id": homeUrl + "#organization" },
       url: pageUrl + "#enrollment",
-      offers: {
+      offers: offer.plans.map((plan) => ({
         "@type": "Offer",
-        price: offer.monthlyPrice.replace(/[^\d.]/g, ""),
+        name: plan.name.en,
+        // Strip currency symbol and thousands separators: "€1,000" -> "1000".
+        price: plan.price.en.replace(/[^\d.]/g, ""),
         priceCurrency: "EUR",
-        url: offer.checkoutUrl,
+        url: plan.checkoutUrl,
         availability:
           offer.enrollmentState === "open"
             ? "https://schema.org/InStock"
             : "https://schema.org/PreOrder",
-      },
+      })),
     },
     {
       "@type": "FAQPage",

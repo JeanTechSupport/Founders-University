@@ -1,0 +1,20 @@
+---
+import { brand } from "../content/site";
+
+interface Props {
+  /** `stack` centres the name under the eagle; `row` sets it beside, for the header. */
+  layout?: "stack" | "row";
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+
+const { layout = "stack", size = "md", class: className } = Astro.props;
+---
+
+<span class:list={["lockup", `lockup--${layout}`, `lockup--${size}`, className]}>
+  <img class="lockup__mark" src="/Founders-university icon.svg" alt="" aria-hidden="true" />
+  <span class="lockup__name" aria-hidden="true">
+    <span class="lockup__lead">{brand.wordmark.lead}</span>
+    <span class="lockup__tail">{brand.wordmark.tail}</span>
+  </span>
+</span>

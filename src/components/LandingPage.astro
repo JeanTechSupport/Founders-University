@@ -1,5 +1,6 @@
 ---
-import { brand, copy, offer, showDutch, v2, type Locale } from "../content/site";
+import { brand, copy, offer, primaryPlan, showDutch, v2, type Locale } from "../content/site";
+import Lockup from "./Lockup.astro";
 import Hero from "./Hero.astro";
 import Journey from "./Journey.astro";
 import Motion from "./Motion.astro";
@@ -42,8 +43,8 @@ const manifestoTokens = manifestoWords.map((w) => {
 <!-- Header -->
 <header class="v2-header" data-v2-header>
   <div class="container v2-header__inner">
-    <a class="wordmark" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
-      <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+    <a class="wordmark" href={locale === "en" ? "/" : "/nl/"} aria-label={brand.name}>
+      <Lockup layout="row" size="sm" />
     </a>
     <div class="v2-header__actions">
       {showDutch && (
@@ -261,17 +262,44 @@ const manifestoTokens = manifestoWords.map((w) => {
       </div>
       <article class="price-card" data-reveal="right">
         <div class="price-card__head">
-          <a class="wordmark wordmark--xl" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
-            <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+          <a class="wordmark wordmark--xl" href={locale === "en" ? "/" : "/nl/"} aria-label={brand.name}>
+            <Lockup size="lg" />
           </a>
-          <span class="price-card__plan">{x.planLabel}</span>
         </div>
-        <div class="price">
-          <strong>{offer.monthlyPrice}</strong>
-          <span>{offer.billingCadence[locale]}</span>
-        </div>
+        <p class="price-card__label">{t.pricing.plansTitle}</p>
+        <ul class="plans">
+          {offer.plans.map((plan) => (
+            <li>
+              <a
+                class:list={["plan", { "plan--featured": plan.featured }]}
+                href={plan.checkoutUrl}
+                target="_blank"
+                rel="noreferrer"
+                data-umami-event="Checkout"
+                data-umami-event-source={"pricing-" + plan.id}
+              >
+                <span class="plan__head">
+                  <span class="plan__name">{plan.name[locale]}</span>
+                  {plan.badge && <span class="plan__badge">{plan.badge[locale]}</span>}
+                </span>
+                <span class="plan__price">
+                  {plan.compareAtPrice && (
+                    <s>
+                      <span class="u-sr-only">{t.pricing.regularPrice} </span>
+                      {plan.compareAtPrice[locale]}
+                    </s>
+                  )}
+                  <strong>{plan.price[locale]}</strong>
+                  <span class="plan__cadence">{plan.cadence[locale]}</span>
+                </span>
+                {plan.savingsNote && <span class="plan__note">{plan.savingsNote[locale]}</span>}
+                <span class="plan__cta">{t.pricing.cta}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
         <p class="price-card__label">{t.pricing.includesTitle}</p>
-        <ul>{t.pricing.included.map((item) => <li>{item}</li>)}</ul>
+        <ul class="price-card__includes">{t.pricing.included.map((item) => <li>{item}</li>)}</ul>
         {
           offer.enrollmentDeadline && (
             <div class="countdown" data-countdown={offer.enrollmentDeadline} data-cd-ended={x.countdown.ended}>
@@ -285,9 +313,6 @@ const manifestoTokens = manifestoWords.map((w) => {
             </div>
           )
         }
-        <a class="btn btn--block btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-umami-event="Checkout" data-umami-event-source="pricing">
-          <span>{t.pricing.cta}</span>
-        </a>
         {offer.cancelAnytime && <p class="assurance">{t.pricing.assurance}</p>}
       </article>
     </div>
@@ -327,14 +352,14 @@ const manifestoTokens = manifestoWords.map((w) => {
   <div class="container">
     <div class="footer__cta" data-reveal>
       <h2>{t.footer.statement}</h2>
-      <a class="btn btn--lg" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="footer">
+      <a class="btn btn--lg" href={primaryPlan.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="footer">
         <span>{t.pricing.cta}</span>
       </a>
     </div>
     <div class="footer__grid">
       <div>
-        <a class="wordmark wordmark--lg" href={locale === "en" ? "/" : "/nl/"} aria-label="Founders University">
-          <img src="/FOUNDERS-UNIVERSITY.svg" alt="" aria-hidden="true" />
+        <a class="wordmark wordmark--lg" href={locale === "en" ? "/" : "/nl/"} aria-label={brand.name}>
+          <Lockup size="md" />
         </a>
         <p class="footer__statement">{t.story.mediaBody}</p>
       </div>

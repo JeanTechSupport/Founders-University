@@ -158,6 +158,72 @@ img {
   margin: 0 auto;
 }
 
+/* Visible to screen readers only — labels struck-through compare-at prices. */
+.u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Brand lockup — eagle plus the name as live text, so a rename is a config edit
+   rather than new vector artwork. */
+.lockup {
+  display: inline-flex;
+  gap: 0.5em;
+  align-items: center;
+  flex-direction: column;
+  line-height: 1;
+  color: inherit;
+}
+
+.lockup--row {
+  flex-direction: row;
+  gap: 0.6em;
+}
+
+.lockup__mark {
+  width: auto;
+  height: 2.5em;
+  /* Brand artwork is black; invert to white for the dark theme. */
+  filter: invert(1) brightness(1.05);
+}
+
+.lockup__name {
+  display: flex;
+  gap: 0.3em;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lockup--row .lockup__name { align-items: flex-start; }
+
+.lockup__lead {
+  font-family: var(--font-display);
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.lockup__tail {
+  font-family: var(--font-display);
+  font-size: 0.52em;
+  font-weight: 500;
+  letter-spacing: 0.58em;
+  text-indent: 0.58em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.lockup--sm { font-size: 0.8rem; }
+.lockup--md { font-size: 1.05rem; }
+.lockup--lg { font-size: clamp(1.05rem, 2vw, 1.55rem); }
+
+
+
 .eyebrow {
   display: inline-flex;
   gap: 0.7rem;
@@ -489,15 +555,9 @@ img {
   line-height: 1;
 }
 
-.wordmark img {
-  height: 3.2rem;
-  width: auto;
-  /* Brand artwork is black; invert to white for the dark theme. */
-  filter: invert(1) brightness(1.05);
-}
-
-.wordmark--lg img { height: 3.4rem; }
-.wordmark--xl img { height: clamp(4.2rem, 7vw, 5.4rem); }
+.wordmark .lockup { font-size: 0.8rem; }
+.wordmark--lg .lockup { font-size: 1.05rem; }
+.wordmark--xl .lockup { font-size: clamp(1.15rem, 2.1vw, 1.6rem); }
 
 .lang-switch {
   display: flex;
@@ -662,10 +722,8 @@ img {
   transform: translateY(20px);
 }
 
-.hero__crest img {
-  height: clamp(3.4rem, 6vw, 5rem);
-  width: auto;
-  filter: invert(1) brightness(1.05);
+.hero__crest .lockup {
+  font-size: clamp(1.05rem, 2vw, 1.55rem);
   opacity: 0.95;
 }
 
@@ -1776,27 +1834,6 @@ body.v2-ready .hero__cue {
   color: var(--brass-deep);
 }
 
-.price {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
-  justify-content: center;
-  margin: 0 0 1.8rem;
-}
-
-.price strong {
-  font-family: var(--font-display);
-  font-size: clamp(3.2rem, 7vw, 4.4rem);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-}
-
-.price span {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-}
-
 .price-card__label {
   margin-bottom: 1.1rem;
   font-family: var(--font-mono);
@@ -1807,21 +1844,139 @@ body.v2-ready .hero__cue {
   color: var(--brass-deep);
 }
 
-.price-card ul {
+/* Plan chooser — one tile per Whop plan, each linking straight to checkout. */
+.plans {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1.8rem;
+  text-align: left;
+}
+
+.plan {
+  display: grid;
+  gap: 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.35s var(--ease-out), background 0.35s var(--ease-out),
+    transform 0.35s var(--ease-out);
+}
+
+.plan:hover,
+.plan:focus-visible {
+  border-color: var(--brass-deep);
+  transform: translateY(-2px);
+}
+
+.plan--featured {
+  border-color: var(--brass-deep);
+  background: var(--cream);
+}
+
+.plan__head {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plan__name {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.plan--featured .plan__name { color: var(--brass-deep); }
+
+.plan__badge {
+  border-radius: 999px;
+  background: var(--brass-deep);
+  padding: 0.2rem 0.55rem;
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.plan__price {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.plan__price s {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.plan__price strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.4vw, 2.8rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.plan__cadence {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.plan__note {
+  color: var(--brass-deep);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.plan__cta {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.3rem;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.plan__cta::after {
+  content: "\2192";
+  transition: transform 0.35s var(--ease-out);
+}
+
+.plan:hover .plan__cta::after { transform: translateX(0.3rem); }
+
+.price-card__includes {
   display: grid;
   gap: 0.8rem;
   margin-bottom: 1.8rem;
   text-align: left;
 }
 
-.price-card li {
+.price-card__includes li {
   display: flex;
   gap: 0.7rem;
   color: var(--ink);
   font-size: 0.94rem;
 }
 
-.price-card li::before {
+.price-card__includes li::before {
   color: var(--brass-deep);
   font-weight: 700;
   content: "\2713";

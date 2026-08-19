@@ -1,5 +1,5 @@
 ---
-import { copy, offer, type Locale } from "../content/site";
+import { copy, primaryPlan, type Locale } from "../content/site";
 
 interface Props {
   locale: Locale;
@@ -62,7 +62,7 @@ const weekLabel = locale === "en" ? "Week" : "Week";
       ))
     }
     <div class="journey__actions">
-      <a class="btn" href={offer.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.4" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="journey">
+      <a class="btn" href={primaryPlan.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.4" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="journey">
         <span>{method.cta}</span>
       </a>
     </div>
