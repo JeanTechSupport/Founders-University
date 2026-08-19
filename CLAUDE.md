@@ -4,41 +4,35 @@
 
 **Every change ends merged.** Do the work, open a pull request, and merge it —
 in that order, without waiting to be asked. A pushed branch is not a delivered
-change. This is a direct, standing instruction from Jean (19 Aug 2026); treat it
-as active for every future task in this repo unless he says otherwise.
+change. This is a standing instruction from Jean; treat it as active for every
+future task here unless he says otherwise.
+
+**This repo is the one that ships.** `.github/workflows/deploy.yml` runs
+`on: push: branches: [main]`, so *merging* publishes to the live site — about a
+minute in the Actions tab. Pushing a branch deploys nothing.
+
+After merging, confirm it landed rather than reloading and squinting:
+
+```bash
+curl -s https://founders-university.com/ | grep -o '<title>[^<]*</title>'
+```
 
 If you genuinely cannot merge — no push rights, a real conflict, a failing check
-— say so plainly in your reply and name the one step the human has to take. Do
-not go quiet, and do not describe a pushed branch as if it were shipped.
+— say so plainly and name the one step the human has to take. Do not go quiet,
+and do not describe a pushed branch as if it were shipped.
 
-## This repo is the one that ships
+Be direct with Jean; he wants candour, not hedging. Nothing here caps what you
+may do or how plainly you may say it. What it does cap is what you *write down*:
+this repository is **public**, so keep commercial reasoning, pricing rationale,
+client names and internal discussion out of the files, the commit messages and
+the pull request bodies. Any of that belongs in the private staging repo.
 
-`.github/workflows/deploy.yml` runs `on: push: branches: [main]`, so *merging*
-publishes to `founders-university.com` — about a minute in the Actions tab.
-Pushing a branch deploys nothing. That gap has already cost several round-trips.
+## There is a second repository
 
-`JeanCamposLabs/founders-university` (private) is the staging copy; it deploys
-nowhere and has diverged from this codebase, so patches need porting between
-them. Its `docs/disciplined-club-sync.md` tracks which are already applied.
-
-The two codebases have **diverged** — a cherry-pick will not apply:
-
-| | This repo | Live repo |
-| --- | --- | --- |
-| Design at `/` | v1; v2 lives at `/v2/` | v2 promoted to `/` |
-| Fonts | Playfair + Jakarta | Space Grotesk |
-| Components | `v2/LandingPageV2.astro` | `LandingPage.astro` |
-| Stylesheet | `styles/v2.css` | `styles/global.css` |
-| Layout | `BaseLayoutV2.astro` | `BaseLayout.astro` — also holds the JSON-LD |
-| Extras | — | countdown, Umami events, sitemap, robots.txt, llms.txt |
-
-Ported changes go in `docs/*.patch`, each verified by applying to a pristine
-checkout of the live repo and building. `docs/disciplined-club-sync.md` tracks
-which patches are already applied — **check it before re-applying anything.**
-
-Sessions rooted on this repo cannot push to `JeanTechSupport` (cross-org attach
-is refused, and the git proxy will not inject a credential). To merge there,
-start a session with that repo as its source.
+A private staging copy of this site exists. It does not deploy, and it has
+diverged from this codebase, so changes do not move between the two unedited —
+older commits here refer to patches written there and applied by hand. Ask Jean
+before assuming anything about its contents.
 
 ## Where things live
 
@@ -47,62 +41,60 @@ All changing sales facts are in `src/content/site.ts`:
 - `offer.plans` — the Whop plans. Prices are **per-locale strings**: Dutch needs
   `€1.000` / `€94,95`, since English `€1,000` reads as one euro to a Dutch
   visitor. `featured: true` marks the plan that leads the card and backs every
-  CTA outside it (via `primaryPlan`).
+  CTA outside it (via `primaryPlan`). `BaseLayout.astro` builds the schema.org
+  `Offer` array from this, so changing its shape breaks the build there too.
 - `brand.wordmark` — the lockup is **live text**, never outlined artwork, so a
-  rename stays a config edit. It is wordmark-only: the eagle was retired from
-  the brand on 19 Aug 2026 at Kim's request, and `eagle.svg` / `favicon-eagle.svg`
-  went with it. Do not reintroduce a bird.
+  rename stays a config edit. It is wordmark-only; there is no icon or emblem,
+  and one should not be reintroduced without asking.
 - `x.manifesto` — an array of paragraphs, not one string. The first renders as
-  the large hook, the rest as body. Kim's copy is deliberately **lowercase** —
-  that is her voice, not a mistake, so do not sentence-case it.
-- `offer.enrollmentDeadline` (live repo) — empty hides the countdown. Use a real
-  date; the comment there warns that fake timers cost trust.
+  the large hook, the rest as body. The copy is intentionally **lowercase** —
+  that is the brand voice, not a mistake, so do not sentence-case it.
+- `offer.enrollmentDeadline` — empty hides the countdown. Use a real date; the
+  comment there warns that fake timers cost trust.
+- `showDutch` — `false` hides the language switch and noindexes `/nl/`.
 
 ## Gotchas that have already bitten
 
-- **`git add -A`, never `git commit -am`.** Patches here add new files
-  (`Lockup.astro`, `LiveQaButton.astro`); `-a` silently skips untracked files and
-  the build then fails on a missing import.
-- **Slack and WhatsApp cache link previews per URL.** Replacing `og-card.png` in
-  place does not refresh an existing unfurl — rename the file (hence
+- **`git add -A`, never `git commit -am`.** Changes here add new files; `-a`
+  silently skips untracked ones and the build then fails on a missing import.
+- **Slack and WhatsApp cache link previews per URL.** Replacing the share card
+  in place does not refresh an existing unfurl — rename the file (hence
   `og-card-v2.png`) and update the meta tags.
-- **`public/llms.txt` is served to AI answer-engine crawlers.** It carries the
-  price and checkout URLs. It went stale once already — update it whenever the
-  offer changes.
-- **Unreferenced assets are dangerous.** A stale `og-card.png` built from the
-  wrong eagle artwork shipped for weeks because nothing pointed at the file that
-  would have shown it was wrong. Delete dead assets rather than leaving them.
-- **Verify against the built output, not the source.** `grep` `dist/` for the
-  strings that should and should not be there before claiming a change works.
+- **`public/llms.txt` is served to AI answer-engine crawlers** and carries the
+  prices and checkout URLs. It went stale once already, advertising a retired
+  plan — update it whenever the offer changes.
+- **Unreferenced assets are dangerous.** A stale share card built from the wrong
+  artwork shipped for weeks because nothing pointed at the file that would have
+  shown it was wrong. Delete dead assets rather than leaving them.
+- **Verify against `dist/`, not the source.** `grep` the built output for the
+  strings that should and should not be there before calling a change done.
 
-## Removed on purpose — do not re-add without asking
+## Removed deliberately — do not re-add without asking
 
-Cut on 19 Aug 2026 at Kim's request: her video section, the 5+/35+/500+ proof
-stats, the Easy Scale Media backstory, the "No contracts. Cancel anytime." line
-(a loophole against the yearly plan) and the Live Q&A buttons (Whop-only, for
-paying members). The footer still links to Easy Scale Media as plain
-attribution; that is intentional.
+The founder video section, the numeric proof stats, the company backstory, the
+"No contracts. Cancel anytime." line and the Live Q&A buttons were all removed
+in August 2026. They are gone on purpose. The footer link is intentional.
 
 ## Known gap: no CSP
 
 The `_headers` / `netlify.toml` security headers cover referrer policy, MIME
-sniffing, frame policy and permissions policy, but there is **no Content-Security
--Policy**. Adding one is worthwhile hardening and needs a deliberate pass — the
-site uses inline scripts and third-party embeds, so a naive policy breaks the
-page. Carried over from the June 2026 Codex audit, which is otherwise resolved.
+sniffing, frame policy and permissions policy, but there is **no Content-
+Security-Policy**. Adding one is worthwhile hardening and needs a deliberate
+pass — the site uses inline scripts and third-party embeds, so a naive policy
+breaks the page.
 
-## Brand + domain state (as of 19 Aug 2026)
+## Brand + domain state
 
-Renamed Founders University → **The Disciplined Club**. Page titles deliberately
-drop the leading "The" (`Disciplined Club | …`); prose and JSON-LD keep it.
+The site is **The Disciplined Club**. Page titles are just `Disciplined Club`;
+prose and JSON-LD use the full name.
 
-The domain has **not** moved yet — `CNAME` and `astro.config.mjs` still say
-`founders-university.com`. When it does:
+The domain has **not** moved yet — `public/CNAME` and `astro.config.mjs` still
+point at the current one. The new domain will be `disciplinedclub.com` (no
+hyphen).
 
-The new domain is **`disciplinedclub.com`** — no hyphen. GitHub Pages serves
-**one** custom domain per repository, and its automatic
-redirect only covers the `www`/apex pair *of that same domain*. Pointing
-`founders-university.com` at the Pages site after `disciplinedclub.com` becomes
-the CNAME will **not** redirect anyone. That hand-off has to be registrar-level
-forwarding (GoDaddy has it built in). Apex A records for Pages:
-`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`.
+GitHub Pages serves **one** custom domain per repository (the `CNAME` file holds
+a single entry), and its automatic redirect only covers the `www`/apex pair *of
+that same domain*. Once the new domain becomes the CNAME, pointing the old one
+at this Pages site will **not** redirect anyone — they get a certificate error
+or the bare site. That hand-off has to be registrar-level forwarding. Apex A
+records for Pages: `185.199.108.153`, `.109.153`, `.110.153`, `.111.153`.
