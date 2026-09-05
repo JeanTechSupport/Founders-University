@@ -14,7 +14,7 @@ not go quiet, and do not describe a pushed branch as if it were shipped.
 ## This repo is the one that ships
 
 `.github/workflows/deploy.yml` runs `on: push: branches: [main]`, so *merging*
-publishes to `founders-university.com` — about a minute in the Actions tab.
+publishes to `disciplinedclub.com` — about a minute in the Actions tab.
 Pushing a branch deploys nothing. That gap has already cost several round-trips.
 
 `JeanCamposLabs/founders-university` (private) is the staging copy; it deploys
@@ -118,18 +118,24 @@ sniffing, frame policy and permissions policy, but there is **no Content-Securit
 site uses inline scripts and third-party embeds, so a naive policy breaks the
 page. Carried over from the June 2026 Codex audit, which is otherwise resolved.
 
-## Brand + domain state (as of 19 Aug 2026)
+## Brand + domain state (as of 5 Sep 2026)
 
 Renamed Founders University → **The Disciplined Club**. Page titles deliberately
 drop the leading "The" (`Disciplined Club | …`); prose and JSON-LD keep it.
 
-The domain has **not** moved yet — `CNAME` and `astro.config.mjs` still say
-`founders-university.com`. When it does:
+The domain **has moved**: the site serves at **`disciplinedclub.com`** — no
+hyphen. `public/CNAME` and `astro.config.mjs` both name it, and the apex A
+records point at Pages (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`).
 
-The new domain is **`disciplinedclub.com`** — no hyphen. GitHub Pages serves
-**one** custom domain per repository, and its automatic
-redirect only covers the `www`/apex pair *of that same domain*. Pointing
-`founders-university.com` at the Pages site after `disciplinedclub.com` becomes
-the CNAME will **not** redirect anyone. That hand-off has to be registrar-level
-forwarding (GoDaddy has it built in). Apex A records for Pages:
-`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`.
+**`public/CNAME` is load-bearing.** The Actions deploy publishes it with the
+build, and Pages reads it on every deploy — so a stale value there silently
+resets the custom domain and takes the site down. If the domain ever changes
+again, `CNAME` and `astro.config.mjs`'s `site` (which drives the canonical,
+`og:url`, sitemap and JSON-LD `@id`s) change together, plus `public/robots.txt`,
+`public/sitemap.xml` and `public/llms.txt`.
+
+`founders-university.com` no longer resolves to this Pages site. GitHub Pages
+serves **one** custom domain per repository, and its automatic redirect only
+covers the `www`/apex pair *of that same domain*, so pointing the old domain
+here will **not** redirect anyone. That hand-off has to be registrar-level
+forwarding (GoDaddy has it built in).
