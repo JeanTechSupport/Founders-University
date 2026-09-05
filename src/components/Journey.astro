@@ -1,5 +1,5 @@
 ---
-import { copy, primaryPlan, type Locale } from "../content/site";
+import { copy, primaryCtaHref, primaryCtaIsExternal, type Locale } from "../content/site";
 
 interface Props {
   locale: Locale;
@@ -7,7 +7,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const method = copy[locale].method;
-const weekLabel = locale === "en" ? "Week" : "Week";
+const stepLabel = method.stepLabel;
+const total = String(method.steps.length).padStart(2, "0");
 ---
 
 <div class="journey" data-journey>
@@ -29,7 +30,7 @@ const weekLabel = locale === "en" ? "Week" : "Week";
           <span class="journey__dot">{step.number}</span>
           <span>
             <small>
-              {weekLabel} {i + 1}
+              {stepLabel} {i + 1}
             </small>
             <strong>{step.title}</strong>
           </span>
@@ -50,19 +51,19 @@ const weekLabel = locale === "en" ? "Week" : "Week";
           data-journey-panel
         >
           <span class="journey__week">
-            {weekLabel} {i + 1} — {step.number} / 04
+            {stepLabel} {i + 1} / {total}
           </span>
           <h3>{step.title}</h3>
-          <p>{step.body}</p>
-          <p class="journey__check">
-            <span aria-hidden="true">✦</span>
-            {step.checkpoint}
-          </p>
+          <ul class="journey__points">
+            {step.points.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
         </article>
       ))
     }
     <div class="journey__actions">
-      <a class="btn" href={primaryPlan.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.4" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="journey">
+      <a class="btn" href={primaryCtaHref} target={primaryCtaIsExternal ? "_blank" : undefined} rel={primaryCtaIsExternal ? "noreferrer" : undefined} data-magnetic="0.4" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="journey">
         <span>{method.cta}</span>
       </a>
     </div>

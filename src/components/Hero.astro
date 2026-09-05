@@ -7,29 +7,32 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const hero = copy[locale].hero;
-const scrollCue = v2[locale].scrollCue;
+const t = copy[locale];
+const x = v2[locale];
 
-// Split the headline into words and tag the emphasis phrase so it can be
-// animated word-by-word and accented in italic brass.
+// The page opens on the manifesto (Kim, 5 Sep 2026): the hook is the H1 and
+// the explanation sits directly under it, so nothing needs scrolling to read.
+const [hook, ...explanation] = x.manifesto;
+
+// Split the hook on its sentence break so the second half can be accented in
+// italic brass and forced onto its own line.
+const sentences = hook.split(/(?<=\.)\s+/).filter(Boolean);
+const lead = sentences[0] ?? hook;
+const accent = sentences.slice(1).join(" ");
 const words = [
-  ...hero.titleLead.split(" ").map((w) => ({ w, accent: false })),
-  ...hero.titleEmphasis.split(" ").map((w) => ({ w, accent: true })),
-  ...hero.titleTail.split(" ").map((w) => ({ w, accent: false })),
+  ...lead.split(" ").map((w) => ({ w, accent: false })),
+  ...(accent ? accent.split(" ").map((w) => ({ w, accent: true })) : []),
 ];
-
-// Force the headline onto two lines (feedback: "What is holding" / "you back?").
-// Break right after the first emphasis word.
-const breakAfter = hero.titleLead.split(" ").length;
+const breakAfter = lead.split(" ").length - 1;
 ---
 
 <section class="hero" id="basecamp" data-altitude>
-  <div class="hero__sticky">
+  <div class="hero__stage">
     <div
       class="hero__fallback"
       style={media.heroImageUrl ? `--hero-image: url("${media.heroImageUrl}")` : undefined}
       role="img"
-      aria-label={hero.imageAlt}
+      aria-label={t.hero.imageAlt}
     >
     </div>
     <canvas class="hero__canvas" data-hero-canvas data-hero-src={media.heroImageUrl} aria-hidden="true"></canvas>
@@ -39,6 +42,7 @@ const breakAfter = hero.titleLead.split(" ").length;
       <div class="hero__crest">
         <Lockup size="lg" />
       </div>
+      <p class="eyebrow hero__eyebrow">{x.manifestoEyebrow}</p>
       <h1>
         {
           words.map((item, i) => (
@@ -51,11 +55,14 @@ const breakAfter = hero.titleLead.split(" ").length;
           ))
         }
       </h1>
-    </div>
-
-    <div class="hero__cue" aria-hidden="true">
-      <span>{scrollCue}</span>
-      <span class="hero__cue-line"></span>
+      <div class="hero__body">
+        {explanation.map((para, i) => <p style={`--i: ${i}`}>{para}</p>)}
+      </div>
+      <div class="hero__cta">
+        <a class="btn btn--lg" href="#enrollment" data-magnetic="0.3" data-cursor="Start">
+          <span>{t.navigation.cta}</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -250,7 +257,7 @@ const breakAfter = hero.titleLead.split(" ").length;
         let raf = 0;
         const render = (now: number) => {
           const heroH = heroEl ? heroEl.offsetHeight : innerHeight;
-          const prog = Math.min(1, Math.max(0, scrollY / Math.max(1, heroH - innerHeight)));
+          const prog = Math.min(1, Math.max(0, scrollY / Math.max(1, heroH)));
           // pause work once the hero has fully scrolled away
           if (scrollY > heroH + innerHeight) {
             raf = requestAnimationFrame(render);

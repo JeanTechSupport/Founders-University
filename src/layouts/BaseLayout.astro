@@ -51,7 +51,9 @@ const structuredData = {
         // Strip currency symbol and thousands separators: "€1,000" -> "1000".
         price: plan.price.en.replace(/[^\d.]/g, ""),
         priceCurrency: "EUR",
-        url: plan.checkoutUrl,
+        // Point at the pricing section while a plan has no checkout link yet —
+        // an empty `url` is worse than no `url` for structured data.
+        url: plan.checkoutUrl || pageUrl + "#enrollment",
         availability:
           offer.enrollmentState === "open"
             ? "https://schema.org/InStock"

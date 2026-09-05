@@ -1,9 +1,17 @@
 ---
-import { brand, copy, offer, primaryPlan, showDutch, v2, type Locale } from "../content/site";
+import {
+  brand,
+  copy,
+  offer,
+  primaryCtaHref,
+  primaryCtaIsExternal,
+  showDutch,
+  v2,
+  type Locale,
+} from "../content/site";
 import Lockup from "./Lockup.astro";
 import Hero from "./Hero.astro";
 import Journey from "./Journey.astro";
-import Motion from "./Motion.astro";
 
 interface Props {
   locale: Locale;
@@ -16,18 +24,7 @@ const year = new Date().getFullYear();
 
 // Rail order follows the visible scroll order. Keep this list and
 // v2.sectionLabels the same length — the rail zips them together.
-const ids = [
-  "basecamp",
-  "the-reason",
-  "inside",
-  "first-30",
-  "principles",
-  "the-fit",
-  "enrollment",
-  "questions",
-  "in-motion",
-];
-
+const ids = ["basecamp", "inside", "how-it-works", "the-fit", "enrollment", "questions"];
 ---
 
 <!-- Header -->
@@ -62,31 +59,6 @@ const ids = [
 
 <main>
   <Hero locale={locale} />
-
-  <!-- Manifesto -->
-  <section class="manifesto" id="the-reason" data-altitude>
-    <div class="manifesto__sticky">
-      <div class="manifesto__inner">
-        <p class="eyebrow">{x.manifestoEyebrow}</p>
-        {
-          x.manifesto.map((para, i) => (
-            <p
-              class:list={["manifesto__text", { "manifesto__text--lead": i === 0 }]}
-              data-reveal
-              style={`--i: ${i}`}
-            >
-              {para}
-            </p>
-          ))
-        }
-        <div class="manifesto__cta" data-reveal>
-          <a class="btn btn--ghost" href="#enrollment" data-magnetic="0.3" data-cursor="Explore">
-            <span>{t.navigation.cta}</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Benefits bento -->
   <section class="section section-dark" id="inside" data-altitude>
@@ -129,37 +101,15 @@ const ids = [
     </div>
   </section>
 
-  <!-- First 30 days -->
-  <section class="section section-slate" id="first-30" data-altitude>
+  <!-- How it works -->
+  <section class="section section-slate" id="how-it-works" data-altitude>
     <div class="container">
       <div class="section-head" data-reveal>
         <p class="eyebrow">{t.method.eyebrow}</p>
         <h2 class="section-title">{t.method.title}</h2>
-        <p class="lede" style="margin-top: 1.4rem">{t.method.body}</p>
       </div>
       <div data-reveal style="--i: 1">
         <Journey locale={locale} />
-      </div>
-    </div>
-  </section>
-
-  <!-- Ethos / principles -->
-  <section class="section section-dark" id="principles" data-altitude>
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow">{x.ethos.eyebrow}</p>
-        <h2 class="section-title">{x.ethos.title}</h2>
-      </div>
-      <div class="ethos__grid">
-        {
-          x.ethos.items.map((item, i) => (
-            <div class="ethos__item" data-reveal style={`--i: ${i % 2}`}>
-              <span class="ethos__index">{String(i + 1).padStart(2, "0")}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
@@ -200,38 +150,47 @@ const ids = [
         </div>
         <p class="price-card__label">{t.pricing.plansTitle}</p>
         <ul class="plans">
-          {offer.plans.map((plan) => (
-            <li>
-              <a
-                class:list={["plan", { "plan--featured": plan.featured }]}
-                href={plan.checkoutUrl}
-                target="_blank"
-                rel="noreferrer"
-                data-umami-event="Checkout"
-                data-umami-event-source={"pricing-" + plan.id}
-              >
-                <span class="plan__head">
-                  <span class="plan__name">{plan.name[locale]}</span>
-                  {plan.badge && <span class="plan__badge">{plan.badge[locale]}</span>}
-                </span>
-                <span class="plan__price">
-                  {plan.compareAtPrice && (
-                    <s>
-                      <span class="u-sr-only">{t.pricing.regularPrice} </span>
-                      {plan.compareAtPrice[locale]}
-                    </s>
-                  )}
-                  <strong>{plan.price[locale]}</strong>
-                  <span class="plan__cadence">{plan.cadence[locale]}</span>
-                </span>
-                {plan.savingsNote && <span class="plan__note">{plan.savingsNote[locale]}</span>}
-                <span class="plan__cta">{t.pricing.cta}</span>
-              </a>
-            </li>
-          ))}
+          {offer.plans.map((plan) => {
+            // No checkout link yet? Render the plan as a plain card rather than
+            // a button that goes nowhere. Filling in `checkoutUrl` re-arms it.
+            const Tag = plan.checkoutUrl ? "a" : "div";
+            const linkProps = plan.checkoutUrl
+              ? {
+                  href: plan.checkoutUrl,
+                  target: "_blank",
+                  rel: "noreferrer",
+                  "data-umami-event": "Checkout",
+                  "data-umami-event-source": "pricing-" + plan.id,
+                }
+              : {};
+            return (
+              <li>
+                <Tag
+                  class:list={[
+                    "plan",
+                    { "plan--featured": plan.featured, "plan--pending": !plan.checkoutUrl },
+                  ]}
+                  {...linkProps}
+                >
+                  <span class="plan__head">
+                    <span class="plan__name">{plan.name[locale]}</span>
+                    {plan.badge && <span class="plan__badge">{plan.badge[locale]}</span>}
+                  </span>
+                  <span class="plan__price">
+                    <strong>{plan.price[locale]}</strong>
+                    <span class="plan__cadence">{plan.cadence[locale]}</span>
+                  </span>
+                  <ul class="plan__features">
+                    {plan.features[locale].map((feature) => (
+                      <li>{feature}</li>
+                    ))}
+                  </ul>
+                  <span class="plan__cta">{plan.checkoutUrl ? t.pricing.cta : t.pricing.ctaPending}</span>
+                </Tag>
+              </li>
+            );
+          })}
         </ul>
-        <p class="price-card__label">{t.pricing.includesTitle}</p>
-        <ul class="price-card__includes">{t.pricing.included.map((item) => <li>{item}</li>)}</ul>
         {
           offer.enrollmentDeadline && (
             <div class="countdown" data-countdown={offer.enrollmentDeadline} data-cd-ended={x.countdown.ended}>
@@ -255,7 +214,7 @@ const ids = [
       <div class="section-head" data-reveal style="margin-bottom: 0">
         <p class="eyebrow">{t.faq.eyebrow}</p>
         <h2 class="section-title">{t.faq.title}</h2>
-        <div class="faq__live">
+      </div>
       <div class="faq__list" data-reveal="right">
         {
           t.faq.items.map((item, i) => (
@@ -273,9 +232,6 @@ const ids = [
       </div>
     </div>
   </section>
-
-  <!-- In motion — moved to the bottom of the page (per feedback) -->
-  <Motion locale={locale} />
 </main>
 
 <!-- Footer -->
@@ -283,7 +239,16 @@ const ids = [
   <div class="container">
     <div class="footer__cta" data-reveal>
       <h2>{t.footer.statement}</h2>
-      <a class="btn btn--lg" href={primaryPlan.checkoutUrl} target="_blank" rel="noreferrer" data-magnetic="0.3" data-cursor="Join" data-umami-event="Checkout" data-umami-event-source="footer">
+      <a
+        class="btn btn--lg"
+        href={primaryCtaHref}
+        target={primaryCtaIsExternal ? "_blank" : undefined}
+        rel={primaryCtaIsExternal ? "noreferrer" : undefined}
+        data-magnetic="0.3"
+        data-cursor="Join"
+        data-umami-event="Checkout"
+        data-umami-event-source="footer"
+      >
         <span>{t.pricing.cta}</span>
       </a>
     </div>
@@ -295,10 +260,6 @@ const ids = [
         <p class="footer__statement">{t.footer.blurb}</p>
       </div>
       <div class="footer__meta">
-        <div class="footer__links">
-          <a href={brand.companyUrl} target="_blank" rel="noreferrer">{t.footer.companyLink}</a>
-          <a href={brand.youtubeUrl} target="_blank" rel="noreferrer">{t.footer.youtubeLink}</a>
-        </div>
         <p class="footer__disclaimer">{t.footer.disclaimer}</p>
         <p class="footer__copyright">&copy; {year} {brand.name}</p>
       </div>
@@ -311,5 +272,3 @@ const ids = [
 </footer>
 
 <a class="mobile-cta btn btn--block" href="#enrollment"><span>{t.navigation.cta}</span></a>
-
-

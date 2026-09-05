@@ -5,18 +5,19 @@ export interface PlanConfig {
   id: string;
   /** Keep matching the Whop plan title so checkout feels continuous. */
   name: Record<Locale, string>;
-  /** Early-bird price, pre-formatted per locale (NL uses a comma decimal). */
+  /** Price, pre-formatted per locale (NL uses a comma decimal). */
   price: Record<Locale, string>;
-  /** Regular price, rendered struck through. Omit the field to hide it. */
-  compareAtPrice?: Record<Locale, string>;
+  /** Sits under the price. Kim quotes prices as "incl. VAT", not per period. */
   cadence: Record<Locale, string>;
+  /** Whop checkout. EMPTY = the plan renders as "coming soon", not a dead link. */
   checkoutUrl: string;
-  /** Leads the card visually. Exactly one plan should set this. */
+  /** Leads the card visually and backs every CTA outside it. Exactly one plan. */
   featured?: boolean;
   /** Small pill above the price. Omit the field to hide it. */
   badge?: Record<Locale, string>;
-  /** Saving against the other plan. Omit the field to hide it. */
-  savingsNote?: Record<Locale, string>;
+  /** What this plan includes. Rendered inside the plan, never as a shared list —
+      the two plans differ, so a single site-wide "includes" list would lie. */
+  features: Record<Locale, string[]>;
 }
 
 export interface OfferConfig {
@@ -27,36 +28,55 @@ export interface OfferConfig {
   /** ISO 8601 date for the enrollment countdown. Leave empty to hide it.
       Use a REAL deadline (cohort close / price rise) — fake timers hurt trust. */
   enrollmentDeadline?: string;
-  youtubeVideoId?: string;
 }
 
 export const offer: OfferConfig = {
   productName: "The Disciplined Club",
   plans: [
     {
-      id: "monthly",
-      name: { en: "Early Bird Monthly", nl: "Early Bird Maandelijks" },
-      price: { en: "€94.95", nl: "€94,95" },
-      compareAtPrice: { en: "€118.69", nl: "€118,69" },
-      cadence: { en: "/ month", nl: "/ maand" },
-      checkoutUrl:
-        "https://whop.com/disciplined-by-kim/early-bird-monthly-the-disciplined-club/",
-      // Kim wants the low entry price to draw the clicks. Move `featured` to the
-      // yearly plan to lead with the better per-year value instead.
+      id: "discipline",
+      name: { en: "The Discipline Plan", nl: "The Discipline Plan" },
+      price: { en: "€34.95", nl: "€34,95" },
+      cadence: { en: "incl. VAT", nl: "incl. btw" },
+      // TODO: paste the Whop link from Kim. Until it is filled in, the plan
+      // shows `pricing.ctaPending` instead of a button that goes nowhere.
+      checkoutUrl: "",
+      // Kim wants the low entry price to draw the clicks. Move `featured` to
+      // the plus plan to lead with the fuller offer instead.
       featured: true,
-      badge: { en: "Most popular", nl: "Meest gekozen" },
+      features: {
+        en: [
+          "Immediate access to the FULL course",
+          "EVERY month a new video",
+          "Cancel anytime, no long-term commitment",
+        ],
+        nl: [
+          "Direct toegang tot de VOLLEDIGE cursus",
+          "ELKE maand een nieuwe video",
+          "Altijd opzegbaar, geen langlopend contract",
+        ],
+      },
     },
     {
-      id: "yearly",
-      name: { en: "Early Bird Yearly", nl: "Early Bird Jaarlijks" },
-      price: { en: "€1,000", nl: "€1.000" },
-      compareAtPrice: { en: "€1,250", nl: "€1.250" },
-      cadence: { en: "/ year", nl: "/ jaar" },
-      checkoutUrl:
-        "https://whop.com/disciplined-by-kim/early-bird-year-the-disciplined-club/",
-      savingsNote: {
-        en: "Save €139.40 vs paying monthly",
-        nl: "Bespaar €139,40 t.o.v. maandelijks",
+      id: "discipline-plus",
+      name: { en: "The Discipline + Plan", nl: "The Discipline + Plan" },
+      price: { en: "€149.95", nl: "€149,95" },
+      cadence: { en: "incl. VAT", nl: "incl. btw" },
+      // TODO: paste the Whop link from Kim.
+      checkoutUrl: "",
+      features: {
+        en: [
+          "Weekly Q&A with the community",
+          "Private WhatsApp group to stay accountable",
+          "Monthly updated content so you keep growing after the 90 days",
+          "Implement everything and become the person you're dreaming of",
+        ],
+        nl: [
+          "Wekelijkse Q&A met de community",
+          "Private WhatsApp-groep om verantwoordelijk te blijven",
+          "Maandelijks nieuwe content zodat je na de 90 dagen blijft groeien",
+          "Implementeer alles en word de persoon die je voor ogen hebt",
+        ],
       },
     },
   ],
@@ -64,18 +84,24 @@ export const offer: OfferConfig = {
   // Countdown is HIDDEN while this is empty. When Kim confirms the real close
   // date, set a full ISO timestamp (e.g. "2026-06-15T23:59:59") to show it again.
   enrollmentDeadline: "",
-  youtubeVideoId: "CS1D5EZrDgg",
 };
 
 /** Plan that every CTA outside the pricing card points at. */
 export const primaryPlan: PlanConfig =
   offer.plans.find((plan) => plan.featured) ?? offer.plans[0];
 
+/** Where an outside CTA sends people. Falls back to the pricing section while
+    the checkout link is still missing, so no button is ever a dead end. */
+export const primaryCtaHref = primaryPlan.checkoutUrl || "#enrollment";
+export const primaryCtaIsExternal = Boolean(primaryPlan.checkoutUrl);
+
 export const brand = {
   name: "The Disciplined Club",
-  /** Two-line lockup set beside the eagle. Kept as text — never outlined into
-      an SVG — so a future rename stays a one-line edit. */
+  /** Two-line lockup. Kept as text — never outlined into an SVG — so a future
+      rename stays a one-line edit. */
   wordmark: { lead: "Disciplined", tail: "Club" },
+  // Not linked in the footer any more (Kim, 5 Sep 2026). Still used as a
+  // schema.org `sameAs` signal, which is invisible to visitors.
   companyUrl: "https://www.easyscalemedia.com/",
   youtubeUrl: "https://www.youtube.com/@kimchiaretti",
 };
@@ -100,20 +126,6 @@ export const analytics = {
 
 export const media = {
   heroImageUrl: "/Mountain.png" as string | undefined,
-  motionVideos: [
-    {
-      id: "U60GAKeFNCk",
-      title: "Q&A: How I Actually Went From Broke to Where I Am Now",
-    },
-    {
-      id: "RXuHNNu-WyU",
-      title: "I Used to Be Broke. Here's What My Day Actually Looks Like Now",
-    },
-    {
-      id: "bXLWloYWBTo",
-      title: "If I was broke in my 20's, here's the system I would build",
-    },
-  ],
 };
 
 export const localeSettings: Record<
@@ -127,20 +139,7 @@ export const localeSettings: Record<
 interface SiteCopy {
   meta: { title: string; description: string };
   navigation: { cta: string; accessibilityLabel: string };
-  hero: {
-    titleLead: string;
-    titleEmphasis: string;
-    titleTail: string;
-    imageAlt: string;
-  };
-  motion: {
-    eyebrow: string;
-    title: string;
-    body: string;
-    watchLabel: string;
-    cues: string[];
-    ticker: string[];
-  };
+  hero: { imageAlt: string };
   benefits: {
     eyebrow: string;
     title: string;
@@ -149,11 +148,10 @@ interface SiteCopy {
   method: {
     eyebrow: string;
     title: string;
-    body: string;
     navigationLabel: string;
-    nextLabel: string;
+    stepLabel: string;
     cta: string;
-    steps: Array<{ number: string; title: string; body: string; checkpoint: string }>;
+    steps: Array<{ number: string; title: string; points: string[] }>;
   };
   fit: {
     eyebrow: string;
@@ -168,10 +166,9 @@ interface SiteCopy {
     title: string;
     body: string;
     plansTitle: string;
-    regularPrice: string;
-    includesTitle: string;
-    included: string[];
     cta: string;
+    /** Shown in place of the button while a plan has no checkout link yet. */
+    ctaPending: string;
   };
   faq: {
     eyebrow: string;
@@ -182,8 +179,6 @@ interface SiteCopy {
     statement: string;
     blurb: string;
     disclaimer: string;
-    companyLink: string;
-    youtubeLink: string;
   };
 }
 
@@ -192,40 +187,20 @@ export const copy: Record<Locale, SiteCopy> = {
     meta: {
       title: "Disciplined Club",
       description:
-        "The Disciplined Club gives ambitious beginners monthly modules, live guidance and a private community to build online with structure.",
+        "The Disciplined Club is a system to become your best self: the full course, a new module every month, and an optional weekly Q&A with a private accountability group.",
     },
     navigation: {
       cta: "Start now",
       accessibilityLabel: "Choose language",
     },
     hero: {
-      titleLead: "What is",
-      titleEmphasis: "holding you",
-      titleTail: "back?",
       imageAlt: "Mountain peak rising above a sea of clouds.",
-    },
-    motion: {
-      eyebrow: "Kim in motion",
-      title: "Guidance you can feel before you join.",
-      body:
-        "A glimpse of the mindset, leadership and business thinking Kim brings into the community.",
-      watchLabel: "Watch full video",
-      cues: ["Mindset", "Leadership", "Scale"],
-      ticker: ["Direction", "Discipline", "Live guidance", "Community", "Momentum"],
     },
     benefits: {
       eyebrow: "What you get inside",
-      title: "A system for progress, not another folder of videos.",
+      title:
+        "A system to become your best self, not another random course full of weak information.",
       cards: [
-        {
-          title: "New monthly modules",
-          body: "Keep building relevant business and life skills each month.",
-          points: [
-            "Discover ways to make money online",
-            "Explore high-income skills and opportunities",
-            "Stay current with practical strategies",
-          ],
-        },
         {
           title: "Discipline & accountability",
           body: "Turn ambition into routines that hold up in real life.",
@@ -236,57 +211,67 @@ export const copy: Record<Locale, SiteCopy> = {
           ],
         },
         {
-          title: "Weekly live Q&A",
-          body: "Get clarity when you are unsure what action comes next.",
+          title: "New monthly modules",
+          body: "Keep building relevant business and life skills each month.",
           points: [
-            "Ask direct questions",
-            "Understand your next steps",
-            "Learn through regular feedback",
+            "Discover the systems to become your best self",
+            "Explore high-income skills and opportunities",
+            "Stay current with practical strategies",
           ],
         },
         {
-          title: "Private community",
-          body: "Build alongside people committed to growth and improvement.",
+          title: "Simple systems",
+          body: "Routines that survive a bad week, not just a good one.",
           points: [
-            "Meet ambitious peers",
-            "Stay accountable",
-            "Grow in the right environment",
+            "No overcomplicated routines",
+            "Systems designed to work even on your lowest days",
+            "Repeatable habits, not one-time motivation",
           ],
         },
       ],
     },
     method: {
-      eyebrow: "Your first 30 days",
-      title: "Turn intention into weekly momentum.",
-      body:
-        "Explore a realistic first month inside The Disciplined Club. Tap each stage to see how learning becomes action.",
-      navigationLabel: "Explore your first month",
-      nextLabel: "Next step",
-      cta: "Start your journey",
+      eyebrow: "How it works",
+      title: "Stop overthinking. Start doing.",
+      navigationLabel: "Explore the four steps",
+      stepLabel: "Step",
+      cta: "Start now",
       steps: [
         {
           number: "01",
-          title: "Choose direction",
-          body: "Begin with a focused module that helps you choose a path worth testing instead of chasing every possibility.",
-          checkpoint: "You leave with one clear next action.",
+          title: "Watch Module 1 — Habits",
+          points: [
+            "Build a morning routine that actually sticks, no willpower required",
+            "Design an evening routine that sets up tomorrow before it even starts",
+            "Become the person who shows up consistently, not just when motivated",
+          ],
         },
         {
           number: "02",
-          title: "Build the habit",
-          body: "Translate what you learn into a small weekly commitment you can actually execute alongside real life.",
-          checkpoint: "Your idea becomes visible progress.",
+          title: "Watch Modules 2-5 — Mind, Body & Income",
+          points: [
+            "Reprogram your mindset so discipline feels automatic, not forced",
+            "Build physical discipline that carries into every other area of your life",
+            "Learn the high-income skills that actually move your life forward",
+          ],
         },
         {
           number: "03",
-          title: "Remove blockers",
-          body: "Bring questions to a weekly live Q&A and get clarity before confusion becomes another month of delay.",
-          checkpoint: "You know what to fix or try next.",
+          title: "Become THAT Person",
+          points: [
+            "Strengthen your spirit and inner alignment, not just your habits",
+            "Cut out the people quietly keeping you stuck",
+            "Remove the bad habits that don't fit who you're becoming",
+          ],
         },
         {
           number: "04",
-          title: "Stay in motion",
-          body: "Share progress with a private community of people building with the same intention and accountability.",
-          checkpoint: "Consistency no longer depends on motivation alone.",
+          title: "Implement & Stay Focused",
+          points: [
+            "Apply everything in real life, not just in theory",
+            "Get new content every month so you never get stuck again",
+            "Stay accountable",
+          ],
         },
       ],
     },
@@ -308,18 +293,11 @@ export const copy: Record<Locale, SiteCopy> = {
     },
     pricing: {
       eyebrow: "Start your journey today",
-      title: "Everything you need to start building online.",
-      body: "Join The Disciplined Club and build with guidance every week.",
+      title: "Everything you need to start building your 90-day transformation.",
+      body: "Join The Disciplined Club and build with structure from day one.",
       plansTitle: "Choose your plan",
-      regularPrice: "Regular price",
-      includesTitle: "Your membership includes",
-      included: [
-        "Monthly growth modules",
-        "Weekly live Q&A calls",
-        "Private like-minded community",
-        "Guidance, discipline and structure",
-      ],
       cta: "Start now",
+      ctaPending: "Payment link coming soon",
     },
     faq: {
       eyebrow: "Frequently asked questions",
@@ -328,7 +306,7 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "What exactly do members get?",
           answer:
-            "Members receive monthly modules, weekly live Q&A calls, access to a private community, and ongoing guidance focused on online business skills, consistency and personal growth.",
+            "Every member gets immediate access to the full course and a new module every month. The Discipline + plan adds a weekly live Q&A with the community and a private WhatsApp group to keep you accountable.",
         },
         {
           question: "Who is this program for?",
@@ -338,68 +316,46 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "Do I need experience or credentials to join?",
           answer:
-            "No. You do not need an existing business or previous credentials. The community is intended to help you start with direction and develop from there.",
+            "No. You do not need an existing business or previous credentials. The course is intended to help you start with direction and develop from there.",
         },
         {
           question: "Can I cancel anytime?",
           answer:
-            "Yes. The membership is monthly, with no long-term contract, and can be cancelled at any time.",
+            "Yes. There is no long-term commitment, and you can cancel at any time.",
         },
         {
           question: "What makes this different from other courses?",
           answer:
-            "Information alone rarely creates progress. The Disciplined Club combines content with weekly guidance, accountability and a community of people committed to taking action.",
+            "Information alone rarely creates progress. The Disciplined Club pairs the course with simple systems built to work on your lowest days, and, on the Discipline + plan, weekly guidance and a group of people taking the same action.",
         },
       ],
     },
     footer: {
-      statement: "Build what matters. Become who it requires.",
+      statement: "Build what matters. Become who you're meant to be.",
       blurb:
-        "a private community of people building the same discipline, with a new module every month and a weekly live q&a.",
+        "the full course, a new module every month, and simple systems that hold up on the days you do not feel like it.",
       disclaimer:
         "Individual results vary. The Disciplined Club provides education and community support; it does not guarantee earnings or business outcomes.",
-      companyLink: "Easy Scale Media",
-      youtubeLink: "Kim on YouTube",
     },
   },
   nl: {
     meta: {
       title: "Disciplined Club",
       description:
-        "The Disciplined Club geeft ambitieuze beginners maandelijkse modules, live begeleiding en een private community om gestructureerd online te bouwen.",
+        "The Disciplined Club is een systeem om je beste zelf te worden: de volledige cursus, elke maand een nieuwe module en optioneel een wekelijkse Q&A met een private accountability-groep.",
     },
     navigation: {
       cta: "Start nu",
       accessibilityLabel: "Kies taal",
     },
     hero: {
-      titleLead: "Wat houdt",
-      titleEmphasis: "jou nog",
-      titleTail: "tegen?",
       imageAlt: "Bergtop die boven een zee van wolken uitsteekt.",
-    },
-    motion: {
-      eyebrow: "Kim in beweging",
-      title: "Begeleiding die je voelt voordat je instapt.",
-      body:
-        "Een blik op de mindset, het leiderschap en de businessinzichten die Kim meebrengt naar de community.",
-      watchLabel: "Bekijk volledige video",
-      cues: ["Mindset", "Leiderschap", "Schaal"],
-      ticker: ["Richting", "Discipline", "Live begeleiding", "Community", "Momentum"],
     },
     benefits: {
       eyebrow: "Wat je krijgt",
-      title: "Een systeem voor vooruitgang, geen map vol video's.",
+      title:
+        "Een systeem om je beste zelf te worden, geen zoveelste cursus vol zwakke informatie.",
       cards: [
-        {
-          title: "Nieuwe maandelijkse modules",
-          body: "Ontwikkel elke maand relevante vaardigheden voor business en leven.",
-          points: [
-            "Ontdek manieren om online inkomen op te bouwen",
-            "Verken waardevolle vaardigheden en kansen",
-            "Blijf bij met praktische strategieën",
-          ],
-        },
         {
           title: "Discipline & verantwoordelijkheid",
           body: "Maak van ambitie routines die standhouden in het echte leven.",
@@ -410,57 +366,67 @@ export const copy: Record<Locale, SiteCopy> = {
           ],
         },
         {
-          title: "Wekelijkse live Q&A",
-          body: "Krijg duidelijkheid wanneer je niet weet wat de volgende actie is.",
+          title: "Nieuwe maandelijkse modules",
+          body: "Ontwikkel elke maand relevante vaardigheden voor business en leven.",
           points: [
-            "Stel directe vragen",
-            "Begrijp je volgende stappen",
-            "Leer door regelmatige feedback",
+            "Ontdek de systemen om je beste zelf te worden",
+            "Verken waardevolle vaardigheden en kansen",
+            "Blijf bij met praktische strategieën",
           ],
         },
         {
-          title: "Private community",
-          body: "Bouw samen met mensen die toegewijd zijn aan groei.",
+          title: "Simpele systemen",
+          body: "Routines die een slechte week overleven, niet alleen een goede.",
           points: [
-            "Ontmoet ambitieuze peers",
-            "Blijf verantwoordelijk",
-            "Groei in de juiste omgeving",
+            "Geen overgecompliceerde routines",
+            "Systemen die ook op je slechtste dagen werken",
+            "Herhaalbare gewoontes, geen eenmalige motivatie",
           ],
         },
       ],
     },
     method: {
-      eyebrow: "Je eerste 30 dagen",
-      title: "Maak van intentie wekelijks momentum.",
-      body:
-        "Verken een realistische eerste maand binnen The Disciplined Club. Tik op elke fase om te zien hoe leren actie wordt.",
-      navigationLabel: "Verken je eerste maand",
-      nextLabel: "Volgende stap",
-      cta: "Start je reis",
+      eyebrow: "Zo werkt het",
+      title: "Stop met overdenken. Begin met doen.",
+      navigationLabel: "Verken de vier stappen",
+      stepLabel: "Stap",
+      cta: "Start nu",
       steps: [
         {
           number: "01",
-          title: "Kies richting",
-          body: "Begin met een gerichte module die je helpt een kans te kiezen om te testen, in plaats van alles tegelijk na te jagen.",
-          checkpoint: "Je vertrekt met een duidelijke volgende actie.",
+          title: "Bekijk Module 1 — Gewoontes",
+          points: [
+            "Bouw een ochtendroutine die echt blijft hangen, zonder wilskracht",
+            "Ontwerp een avondroutine die morgen al klaarzet voordat die begint",
+            "Word iemand die consistent opdaagt, niet alleen als de motivatie er is",
+          ],
         },
         {
           number: "02",
-          title: "Bouw de gewoonte",
-          body: "Zet wat je leert om in een kleine wekelijkse inzet die uitvoerbaar is naast je echte leven.",
-          checkpoint: "Je idee wordt zichtbare vooruitgang.",
+          title: "Bekijk Module 2-5 — Mind, Body & Inkomen",
+          points: [
+            "Herprogrammeer je mindset zodat discipline vanzelf gaat",
+            "Bouw fysieke discipline die doorwerkt in elk ander gebied van je leven",
+            "Leer de vaardigheden die je leven echt vooruit brengen",
+          ],
         },
         {
           number: "03",
-          title: "Verwijder obstakels",
-          body: "Neem vragen mee naar een wekelijkse live Q&A en krijg duidelijkheid voordat twijfel weer tijd kost.",
-          checkpoint: "Je weet wat je als volgende verbetert of test.",
+          title: "Word DIE Persoon",
+          points: [
+            "Versterk je innerlijke rust en richting, niet alleen je gewoontes",
+            "Neem afstand van de mensen die je stilletjes vasthouden",
+            "Laat de gewoontes los die niet passen bij wie je wordt",
+          ],
         },
         {
           number: "04",
-          title: "Blijf bewegen",
-          body: "Deel vooruitgang met een private community van mensen die met dezelfde intentie bouwen.",
-          checkpoint: "Consistentie hangt niet langer alleen af van motivatie.",
+          title: "Implementeer & Blijf Gefocust",
+          points: [
+            "Pas alles toe in het echte leven, niet alleen in theorie",
+            "Krijg elke maand nieuwe content zodat je nooit meer vastloopt",
+            "Blijf verantwoordelijk",
+          ],
         },
       ],
     },
@@ -482,18 +448,11 @@ export const copy: Record<Locale, SiteCopy> = {
     },
     pricing: {
       eyebrow: "Start vandaag jouw reis",
-      title: "Alles wat je nodig hebt om online te beginnen bouwen.",
-      body: "Word lid van The Disciplined Club en bouw iedere week met begeleiding.",
+      title: "Alles wat je nodig hebt voor je transformatie van 90 dagen.",
+      body: "Word lid van The Disciplined Club en bouw vanaf dag één met structuur.",
       plansTitle: "Kies je plan",
-      regularPrice: "Normale prijs",
-      includesTitle: "Je lidmaatschap bevat",
-      included: [
-        "Maandelijkse groeimodules",
-        "Wekelijkse live Q&A-calls",
-        "Private community met gelijkgestemden",
-        "Begeleiding, discipline en structuur",
-      ],
       cta: "Start nu",
+      ctaPending: "Betaallink volgt binnenkort",
     },
     faq: {
       eyebrow: "Veelgestelde vragen",
@@ -502,7 +461,7 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "Wat krijgen leden precies?",
           answer:
-            "Leden krijgen maandelijkse modules, wekelijkse live Q&A-calls, toegang tot een private community en begeleiding rond online businessvaardigheden, consistentie en persoonlijke groei.",
+            "Elk lid krijgt direct toegang tot de volledige cursus en elke maand een nieuwe module. Het Discipline + plan voegt daar een wekelijkse live Q&A met de community en een private WhatsApp-groep aan toe.",
         },
         {
           question: "Voor wie is dit programma?",
@@ -512,51 +471,42 @@ export const copy: Record<Locale, SiteCopy> = {
         {
           question: "Heb ik ervaring of kwalificaties nodig?",
           answer:
-            "Nee. Je hebt geen bestaand bedrijf of eerdere kwalificaties nodig. De community helpt je gericht te starten en van daaruit te ontwikkelen.",
+            "Nee. Je hebt geen bestaand bedrijf of eerdere kwalificaties nodig. De cursus helpt je gericht te starten en van daaruit te ontwikkelen.",
         },
         {
           question: "Kan ik op elk moment opzeggen?",
           answer:
-            "Ja. Het lidmaatschap is maandelijks, zonder langlopend contract, en kan op elk moment worden opgezegd.",
+            "Ja. Er is geen langlopend contract en je kunt op elk moment opzeggen.",
         },
         {
           question: "Wat maakt dit anders dan andere cursussen?",
           answer:
-            "Informatie alleen leidt zelden tot vooruitgang. The Disciplined Club combineert content met wekelijkse begeleiding, verantwoordelijkheid en een community die actie wil nemen.",
+            "Informatie alleen leidt zelden tot vooruitgang. The Disciplined Club combineert de cursus met simpele systemen die ook op je slechtste dagen werken, en op het Discipline + plan wekelijkse begeleiding en een groep die dezelfde stappen zet.",
         },
       ],
     },
     footer: {
-      statement: "Bouw wat telt. Word wie daarvoor nodig is.",
+      statement: "Bouw wat telt. Word wie je bedoeld bent te zijn.",
       blurb:
-        "een private community van mensen die dezelfde discipline bouwen, met elke maand een nieuwe module en een wekelijkse live q&a.",
+        "de volledige cursus, elke maand een nieuwe module en simpele systemen die standhouden op de dagen dat je er geen zin in hebt.",
       disclaimer:
         "Individuele resultaten verschillen. The Disciplined Club biedt educatie en community-ondersteuning; het garandeert geen inkomen of zakelijke resultaten.",
-      companyLink: "Easy Scale Media",
-      youtubeLink: "Kim op YouTube",
     },
   },
 };
 
-// --- V2 ("The Ascent") supplemental content ---------------------------------
-// Additive only. V2 reuses the shared `copy` above and layers these net-new
-// strings on top, so the live V1 page is never affected. Every value here is a
-// one-line swap, the same as the rest of the content model.
+// --- Supplemental content ---------------------------------------------------
+// Strings that sit outside the section-by-section `copy` model above.
 
 export interface V2Copy {
   loaderTagline: string;
-  scrollCue: string;
   manifestoEyebrow: string;
+  /** Opens the page. The first entry is the hook and renders as the H1; the
+      rest are the explanation directly beneath it. Kim's copy is deliberately
+      lowercase — that is her voice, not a mistake. */
   manifesto: string[];
-  ethos: {
-    eyebrow: string;
-    title: string;
-    items: Array<{ title: string; body: string }>;
-  };
-  storyRole: string;
   sectionLabels: string[];
   status: { open: string; waitlist: string; draft: string };
-  planLabel: string;
   countdown: {
     caption: string;
     ended: string;
@@ -571,7 +521,6 @@ export interface V2Copy {
 export const v2: Record<Locale, V2Copy> = {
   en: {
     loaderTagline: "Begin the ascent",
-    scrollCue: "Scroll to begin",
     manifestoEyebrow: "Why this exists",
     manifesto: [
       "you are not behind. you are undisciplined.",
@@ -579,42 +528,8 @@ export const v2: Record<Locale, V2Copy> = {
       "and here's the part no one tells you: you already know this. you've known it for months. you've made the same promise to yourself on a sunday night a hundred times. and by wednesday you're back to the same version of you.",
       "that's not a motivation problem. that's a structure problem. you don't have a system that makes discipline the default instead of the exception.",
     ],
-    ethos: {
-      eyebrow: "What we stand for",
-      title: "Principles, not promises.",
-      items: [
-        {
-          title: "Environment over willpower",
-          body: "Discipline gets easier when the room around you expects it. We build the room.",
-        },
-        {
-          title: "Action over information",
-          body: "You already know enough to start. Progress comes from doing the work and reviewing it every week.",
-        },
-        {
-          title: "Direction over noise",
-          body: "One path tested beats ten tabs open. We help you choose, then commit.",
-        },
-        {
-          title: "A room, not an audience",
-          body: "Nobody here is performing discipline at you. Everyone is running the same modules and showing up to the same weekly call.",
-        },
-      ],
-    },
-    storyRole: "Co-founder, The Disciplined Club",
-    sectionLabels: [
-      "Basecamp",
-      "The reason",
-      "Inside",
-      "First 30 days",
-      "Principles",
-      "The fit",
-      "Enrollment",
-      "Questions",
-      "In motion",
-    ],
+    sectionLabels: ["The reason", "Inside", "How it works", "The fit", "Enrollment", "Questions"],
     status: { open: "Enrollment open", waitlist: "Join the waitlist", draft: "Opening soon" },
-    planLabel: "Monthly membership",
     countdown: {
       caption: "Enrollment for this class closes in",
       ended: "Enrollment closes soon",
@@ -627,7 +542,6 @@ export const v2: Record<Locale, V2Copy> = {
   },
   nl: {
     loaderTagline: "Begin de klim",
-    scrollCue: "Scroll om te beginnen",
     manifestoEyebrow: "Waarom dit bestaat",
     manifesto: [
       "je loopt niet achter. je bent ongedisciplineerd.",
@@ -635,42 +549,8 @@ export const v2: Record<Locale, V2Copy> = {
       "en dit vertelt niemand je: je weet dit al. je weet het al maanden. je hebt jezelf op een zondagavond honderd keer dezelfde belofte gedaan. en woensdag ben je terug bij dezelfde versie van jezelf.",
       "dat is geen motivatieprobleem. dat is een structuurprobleem. je hebt geen systeem dat discipline de standaard maakt in plaats van de uitzondering.",
     ],
-    ethos: {
-      eyebrow: "Waar we voor staan",
-      title: "Principes, geen beloftes.",
-      items: [
-        {
-          title: "Omgeving boven wilskracht",
-          body: "Discipline wordt makkelijker als je omgeving het van je verwacht. Wij bouwen die ruimte.",
-        },
-        {
-          title: "Actie boven informatie",
-          body: "Je weet al genoeg om te beginnen. Vooruitgang komt door te doen en het elke week te bespreken.",
-        },
-        {
-          title: "Richting boven ruis",
-          body: "Eén pad getest verslaat tien tabbladen open. Wij helpen je kiezen en doorzetten.",
-        },
-        {
-          title: "Een ruimte, geen publiek",
-          body: "Niemand speelt hier discipline voor je. Iedereen draait dezelfde modules en komt naar dezelfde wekelijkse call.",
-        },
-      ],
-    },
-    storyRole: "Medeoprichter, The Disciplined Club",
-    sectionLabels: [
-      "Basiskamp",
-      "De reden",
-      "Binnenin",
-      "Eerste 30 dagen",
-      "Principes",
-      "De match",
-      "Inschrijven",
-      "Vragen",
-      "In beweging",
-    ],
+    sectionLabels: ["De reden", "Binnenin", "Zo werkt het", "De match", "Inschrijven", "Vragen"],
     status: { open: "Inschrijving open", waitlist: "Wachtlijst", draft: "Binnenkort" },
-    planLabel: "Maandelijks lidmaatschap",
     countdown: {
       caption: "Inschrijving voor deze class sluit over",
       ended: "Inschrijving sluit binnenkort",
