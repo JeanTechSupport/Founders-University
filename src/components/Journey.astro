@@ -52,6 +52,7 @@ const total = String(method.steps.length).padStart(2, "0");
         >
           <span class="journey__week">
             {stepLabel} {i + 1} / {total}
+            {step.module && <span class="journey__module">{step.module}</span>}
           </span>
           <h3>{step.title}</h3>
           <ul class="journey__points">

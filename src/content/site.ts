@@ -151,7 +151,10 @@ interface SiteCopy {
     navigationLabel: string;
     stepLabel: string;
     cta: string;
-    steps: Array<{ number: string; title: string; points: string[] }>;
+    /** `module` is the course reference ("Module 1"), kept out of the title so
+        all four step titles stay parallel. Omit it on steps that are not a
+        module. */
+    steps: Array<{ number: string; module?: string; title: string; points: string[] }>;
   };
   fit: {
     eyebrow: string;
@@ -239,7 +242,8 @@ export const copy: Record<Locale, SiteCopy> = {
       steps: [
         {
           number: "01",
-          title: "Watch Module 1 — Habits",
+          module: "Module 1",
+          title: "Habits",
           points: [
             "Build a morning routine that actually sticks, no willpower required",
             "Design an evening routine that sets up tomorrow before it even starts",
@@ -248,7 +252,8 @@ export const copy: Record<Locale, SiteCopy> = {
         },
         {
           number: "02",
-          title: "Watch Modules 2-5 — Mind, Body & Income",
+          module: "Modules 2-5",
+          title: "Mind, Body & Income",
           points: [
             "Reprogram your mindset so discipline feels automatic, not forced",
             "Build physical discipline that carries into every other area of your life",
@@ -394,7 +399,8 @@ export const copy: Record<Locale, SiteCopy> = {
       steps: [
         {
           number: "01",
-          title: "Bekijk Module 1 — Gewoontes",
+          module: "Module 1",
+          title: "Gewoontes",
           points: [
             "Bouw een ochtendroutine die echt blijft hangen, zonder wilskracht",
             "Ontwerp een avondroutine die morgen al klaarzet voordat die begint",
@@ -403,7 +409,8 @@ export const copy: Record<Locale, SiteCopy> = {
         },
         {
           number: "02",
-          title: "Bekijk Module 2-5 — Mind, Body & Inkomen",
+          module: "Module 2-5",
+          title: "Mind, Body & Inkomen",
           points: [
             "Herprogrammeer je mindset zodat discipline vanzelf gaat",
             "Bouw fysieke discipline die doorwerkt in elk ander gebied van je leven",

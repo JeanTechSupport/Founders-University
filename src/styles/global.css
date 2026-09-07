@@ -1442,6 +1442,13 @@ body.v2-ready .hero__crest {
   color: var(--muted);
 }
 
+/* The course reference sits beside the step counter rather than in the title,
+   so all four step titles read in the same shape. */
+.journey__module::before {
+  margin: 0 0.5em;
+  content: "·";
+}
+
 .journey__points {
   display: grid;
   gap: 0.7rem;
