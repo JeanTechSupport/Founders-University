@@ -17,28 +17,46 @@ not go quiet, and do not describe a pushed branch as if it were shipped.
 publishes to `disciplinedclub.com` — about a minute in the Actions tab.
 Pushing a branch deploys nothing. That gap has already cost several round-trips.
 
-`JeanCamposLabs/founders-university` (private) is the staging copy; it deploys
-nowhere and has diverged from this codebase, so patches need porting between
-them. Its `docs/disciplined-club-sync.md` tracks which are already applied.
+`JeanCamposLabs/founders-university` (private) is the staging copy. It deploys
+nowhere, and the two codebases have **diverged**, so a cherry-pick between them
+will not apply. Which side you are on is easy to check from the filenames:
 
-The two codebases have **diverged** — a cherry-pick will not apply:
-
-| | This repo | Live repo |
+| | Here (`JeanTechSupport`, live) | Staging (`JeanCamposLabs`) |
 | --- | --- | --- |
-| Design at `/` | v1; v2 lives at `/v2/` | v2 promoted to `/` |
-| Fonts | Playfair + Jakarta | Space Grotesk |
-| Components | `v2/LandingPageV2.astro` | `LandingPage.astro` |
-| Stylesheet | `styles/v2.css` | `styles/global.css` |
-| Layout | `BaseLayoutV2.astro` | `BaseLayout.astro` — also holds the JSON-LD |
-| Extras | — | countdown, Umami events, sitemap, robots.txt, llms.txt |
+| Design at `/` | v2 promoted to `/` | v1; v2 lives at `/v2/` |
+| Fonts | Space Grotesk | Playfair + Jakarta |
+| Components | `LandingPage.astro` | `v2/LandingPageV2.astro` |
+| Stylesheet | `styles/global.css` | `styles/v2.css` |
+| Layout | `BaseLayout.astro` — also holds the JSON-LD | `BaseLayoutV2.astro` |
+| Extras | countdown, Umami events, sitemap, robots.txt, llms.txt | — |
+| `docs/` | absent | holds the ported `*.patch` files |
 
-Ported changes go in `docs/*.patch`, each verified by applying to a pristine
-checkout of the live repo and building. `docs/disciplined-club-sync.md` tracks
-which patches are already applied — **check it before re-applying anything.**
+**These columns were swapped in an earlier version of this file**, which nearly
+sent a patch to the wrong repository on 5 Sep 2026 — a local clone named
+`~/Founders-University` turned out to point at `JeanCamposLabs`. Before
+applying anything, run `git remote -v` and check it against the table.
 
-Sessions rooted on this repo cannot push to `JeanTechSupport` (cross-org attach
-is refused, and the git proxy will not inject a credential). To merge there,
-start a session with that repo as its source.
+Porting *to* staging goes through `docs/*.patch` over there, tracked in its
+`docs/disciplined-club-sync.md` — **check that before re-applying anything.**
+Nothing in this repo needs a `docs/` directory.
+
+### Pushing from an agent session
+
+Sessions rooted here **can** push to `JeanTechSupport` once the Claude GitHub
+App is installed on that account *with write scope*. The failure mode looks
+like a permissions bug but is not: reads succeed while `git push` returns 403
+and the API returns `Resource not accessible by integration`, which means the
+install exists but is scoped read-only. Fix it at
+<https://github.com/apps/claude/installations/select_target> (Contents and Pull
+requests both need Read **and write**), then reconnect GitHub in claude.ai
+settings. A session's token is minted at container start, so a session that has
+already failed may need restarting — though on 5 Sep 2026 the running session
+picked the new scope up without one.
+
+The GitHub MCP tools returned `invalid session` for the whole of that day while
+plain `git` worked fine. If the API path is dead, merge with
+`git merge --ff-only <branch> && git push origin main`; the deploy does not care
+how the commit arrived.
 
 ## Where things live
 
@@ -66,6 +84,13 @@ All changing sales facts are in `src/content/site.ts`:
   directly beneath it, so the page opens on the hook with nothing to scroll past.
   Kim's copy is deliberately **lowercase** — that is her voice, not a mistake, so
   do not sentence-case it (`.hero h1` forces lowercase to keep it that way).
+- `method.steps[].module` — the course reference ("Module 1"), deliberately kept
+  *out* of `title`. Kim flagged on 5 Sep 2026 that the section read as "double
+  watch" because steps 1-2 opened with "Watch Module …" and steps 3-4 did not;
+  the titles were not parallel. The module now renders beside the step counter
+  ("STEP 1 / 04 · MODULE 1") and the four titles read in one shape. The field is
+  optional — omit it on a step that is not a course module. Keep new steps
+  parallel: no leading verb.
 - `offer.enrollmentDeadline` (live repo) — empty hides the countdown. Use a real
   date; the comment there warns that fake timers cost trust.
 
