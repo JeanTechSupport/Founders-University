@@ -100,6 +100,9 @@ export const brand = {
   /** Two-line lockup. Kept as text — never outlined into an SVG — so a future
       rename stays a one-line edit. */
   wordmark: { lead: "Disciplined", tail: "Club" },
+  /** The legal entity behind the brand, shown in the footer (Kim, 7 Oct 2026):
+      Apple and Google check that this domain belongs to the enrolling company. */
+  operator: "Founders University",
   // Not linked in the footer any more (Kim, 5 Sep 2026). Still used as a
   // schema.org `sameAs` signal, which is invisible to visitors.
   companyUrl: "https://www.easyscalemedia.com/",
@@ -523,6 +526,7 @@ export interface V2Copy {
     seconds: string;
   };
   backToTop: string;
+  operatedBy: string;
 }
 
 export const v2: Record<Locale, V2Copy> = {
@@ -546,6 +550,7 @@ export const v2: Record<Locale, V2Copy> = {
       seconds: "Sec",
     },
     backToTop: "Back to top",
+    operatedBy: "Operated by",
   },
   nl: {
     loaderTagline: "Begin de klim",
@@ -567,5 +572,6 @@ export const v2: Record<Locale, V2Copy> = {
       seconds: "Sec",
     },
     backToTop: "Terug naar boven",
+    operatedBy: "Beheerd door",
   },
 };
