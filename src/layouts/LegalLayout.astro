@@ -1,0 +1,114 @@
+---
+// The app's legal and help pages (privacy, terms, support, delete-account): plain readable prose in the site's dark
+// style. Each page is a Markdown file in src/pages whose front matter names this layout, its title, description and
+// path. Written for the Disciplined Club app's store listings (App Store and Google Play link to these URLs).
+import "../styles/global.css";
+import { brand } from "../content/site";
+
+interface Props {
+  frontmatter: { title: string; description: string; path: string };
+}
+
+const { title, description, path } = Astro.props.frontmatter;
+const pageUrl = new URL(path, Astro.site);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${title} · ${brand.name}`}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0d0b07" />
+    <link rel="canonical" href={pageUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+  </head>
+  <body class="legal">
+    <main class="legal__page">
+      <a class="legal__back" href="/">← {brand.name}</a>
+      <article class="legal__prose">
+        <slot />
+      </article>
+      <footer class="legal__footer">
+        <p>{brand.name} is operated by {brand.operator}.</p>
+        <p>
+          <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/support/">Support</a> ·
+          <a href="/delete-account/">Delete your account</a>
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
+
+<style>
+  .legal {
+    background: var(--paper);
+    color: var(--ink);
+    margin: 0;
+  }
+  .legal__page {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  .legal__back {
+    color: var(--brass-bright);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .legal__prose {
+    margin-top: 2rem;
+    line-height: 1.65;
+    font-size: 1.02rem;
+  }
+  .legal__prose :global(h1) {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    line-height: 1.1;
+    margin: 0 0 1.5rem;
+  }
+  .legal__prose :global(h2) {
+    font-size: 1.35rem;
+    margin: 2.4rem 0 0.8rem;
+  }
+  .legal__prose :global(h3) {
+    font-size: 1.1rem;
+    margin: 1.8rem 0 0.6rem;
+  }
+  .legal__prose :global(a) {
+    color: var(--brass-bright);
+  }
+  .legal__prose :global(p),
+  .legal__prose :global(li) {
+    color: var(--muted);
+  }
+  .legal__prose :global(strong) {
+    color: var(--ink);
+  }
+  .legal__prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.95rem;
+  }
+  .legal__prose :global(th),
+  .legal__prose :global(td) {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .legal__footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .legal__footer a {
+    color: var(--muted);
+  }
+</style>
