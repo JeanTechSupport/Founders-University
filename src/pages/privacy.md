@@ -7,7 +7,7 @@ path: "/privacy/"
 
 # Privacy Policy: Disciplined Club app
 
-Effective 2026-10-21
+Effective 2026-11-03
 
 This policy covers the Disciplined Club app. It explains what personal data we collect, why, who else handles
 it, how long we keep it, and what you can do about it. Questions? Write to support@disciplinedclub.com.
@@ -41,14 +41,16 @@ operating system version and app version).
 | Account | Your email address, which we use to send you one-time sign-in codes, an internal user ID, and when you sign in. There is no password. |
 | Profile | The first name you type when you set up the app (your display name), the one line you write about why you are doing this, your goal, your time zone, whether you joined the leaderboard (if it is available: section 5), and the times you gave consent or confirmed the "not medical advice" notice. |
 | Daily challenge | Each day's check-in: the time you tapped "I'm up" (a wake-up time) and whether you did each of the five items (up before 06:00, 2 liters of water, 45 minutes of movement, 10 pages of reading, no alcohol or drugs). Your streaks. |
-| Food and nutrition | The meals you type in (name, calories, protein, carbs, fat, meal type, time eaten) and your daily targets. For the target calculator: your weight, height, age, sex (optional), activity level, training type and goal. |
-| Schedule | The titles, categories, dates and times of your habits, meals, workouts, videos and meetings (we do not read your phone calendar). |
-| Training log | Your weekly split, exercises, weights, sets, reps and "easy / just right / too hard" ratings, plus the AI tips and plans made for you. |
-| Reminders | Nothing. The morning reminder is scheduled on your phone, and only if you allow notifications on your phone. We send no push notifications from a server. |
+| Food and nutrition | The meals you type in (name, calories, protein, carbs, fat, meal type, time eaten) and your daily targets. The foods you save for quick add, and the meals you save (a name and the foods in it, with their calories, protein, carbs and fat), kept on your phone and, when you are signed in, in your account. For the target calculator: your weight, height, age, sex (optional), activity level, training type and goal.  |
+| Schedule | The titles, categories, dates and times of your habits, meals, workouts, videos and meetings (we do not read your phone calendar). If you set a reminder on an item, the reminder stays on your phone (see Reminders). Your training days also show on the schedule.  |
+| Training log | Your weekly split, exercises, weights, sets, reps and "easy / just right / hard" ratings, plus the AI tips and plans made for you. The rest timer and the exercise library keep nothing: the timer runs on your phone and the library is text inside the app.  |
+| Training coach | Your answers to the coach's questions (what you train, your experience, equipment, training days and session length), the week the coach proposes, the day you put it to use, and your daily check-ins (tired, sore or short on time), stored with your account like the rest of your health data. The optional note about something to work around is sent to the AI only when you tick the box.  |
+| Reminders | Nothing. The morning reminder (its title now shows your day number, for example "Day 12"), the optional evening reminder at 21:00 if today is not finished, and the reminders you set on schedule items are all scheduled on your phone, and only if you allow notifications on your phone. The text of an item reminder is what you wrote, such as the title of a meal or a medication; it stays on your phone, in local notifications. On iOS your own phone settings decide whether a lock-screen preview shows it. On Android it is hidden on a secure lock screen. We send no push notifications from a server.  |
+| Language, units and finish card | Nothing. Your language and your metric or imperial choice stay on your phone and are never sent to us (the language code goes with AI requests: section 4). If you finish all 30 days, the app can show a card with a 30/30 badge. It is shared only if you tap share, through your phone's own share sheet. We receive nothing.  |
 | Videos | Nothing is collected by us. When you open the Reset tab, your phone loads preview images from YouTube's servers (section 6). |
 | App updates | Each time the app starts, it asks Expo's update service whether a newer version of the app's code is available. The request carries your IP address, your phone's platform (iOS or Android), the app version, the update channel, the ID of the update the app is running, and a random install ID that Expo creates for this installation. It carries no name, email address or account ID. |
 | Crashes and security | Crash logs and error reports with your device model, operating system version and app version. The services that deliver the app also process your IP address when your phone connects. |
-| AI usage log | For each AI request: the feature, the model, the number of tokens, the outcome and the response time, linked to your user ID. It does not hold what you typed or what the AI answered. |
+| AI usage log | For each AI request: the feature, the model, the number of tokens, the outcome and the response time, linked to your user ID. For the daily coach report it also holds the local date of the report, so that you can ask once a day. It does not hold what you typed or what the AI answered.  |
 | AI reports | If you report an AI suggestion: the suggestion as you saw it (the note, tip or plan), where it came from (for example "ai suggestion"), the optional reason you type, and the time, linked to your account. Only our team can read these reports; you cannot read them back in the app. |
 | Community safety | Reports you submit about another member: your account ID, their board reference, the reason and time. Your block list links your account to their board references. Reports and block lists are private to our team or your own controls, not shared on the board. |
 | Deletion and withdrawal recovery | An encrypted record of your deletion or health/AI withdrawal: your internal account ID, request kind, original consent period where relevant, and time. This lets us honour the choice if we restore after a failure; it contains no meal, body-measurement or workout values. |
@@ -69,8 +71,8 @@ the tracking features. You can withdraw it at any time (section 11).
 | What we do | Data | Legal basis |
 | --- | --- | --- |
 | Create your account, sign you in, keep your data in sync, and run the schedule | Account, profile, schedule | Contract (Art. 6(1)(b)): we need it to give you the app |
-| Run the challenge, food and macro tracking, and the training log | Check-ins, meals, targets, body measurements, training log | Your explicit consent (Art. 9(2)(a)) and contract (Art. 6(1)(b)) |
-| Send your data to Anthropic for AI targets, tips and plans | AI inputs (section 4) | Your explicit consent (Art. 6(1)(a) and 9(2)(a)), asked before your first AI request |
+| Run the challenge, food and macro tracking, and the training log | Check-ins, meals, saved foods and meals, targets, body measurements, training log, training coach answers and check-ins | Your explicit consent (Art. 9(2)(a)) and contract (Art. 6(1)(b)) |
+| Send your data to Anthropic for AI targets, tips, the daily coach report and training coach weeks | AI inputs (section 4) | Your explicit consent (Art. 6(1)(a) and 9(2)(a)), asked before your first AI request |
 | Read and act on your reports about AI suggestions | AI reports (section 2) | Your explicit consent (Art. 6(1)(a) and 9(2)(a)), given when you tap Send report on a form that shows what is sent |
 | Show your display name and streak on the leaderboard, if it is available | Display name, streak (current and best) | Your explicit consent (Art. 6(1)(a) and 9(2)(a)), when you switch it on |
 | Find and fix crashes, deliver app updates, keep the service secure, stop abuse, and keep AI costs under control | Crash reports, update requests, IP addresses, AI usage log | Our legitimate interests (Art. 6(1)(f)) in a stable, secure and affordable service. You can object (section 10). |
@@ -83,16 +85,33 @@ your data or your consent is not available without it.
 
 ## 4. AI features
 
-Three features use AI: the nutrition target calculator, the training coach tip and the next-week training plan. They use
+Four features use AI: the nutrition target calculator, the training tip, the daily coach report and the training coach. They use
 Claude, an AI model from Anthropic.
 
 - **What we send.** For targets: your weight, height, age, sex (if you gave it), activity level, training type and goal.
-  For tips and plans: your training split, exercises, weights, sets, reps and ratings. We do not send your name, email
-  address or account ID.
+  For tips: your training split, exercises, weights, sets, reps and ratings. We do not send your name, email
+  address or account ID. We also send the language you chose in the app (a code such as "fr"), unless it is English, so
+  that the answers come back in that language.
+- **The daily coach report.** When you tap "ask the coach" we send our server, and our server sends Anthropic: your
+  weight, height, age, sex (if you gave it), activity level, training type and goal; your current calorie and macro
+  targets; the total calories, protein, carbs and fat you logged today and yesterday; the names of the meals (breakfast,
+  lunch, dinner, snack) you logged today; and your local date and hour. We do not send the names of your foods, your
+  name, email address or account ID. You get targets, a short explanation, a recap of your day, food ideas and, from the
+  second day, a note on how yesterday went. The app keeps the report on your phone only; it never changes your targets
+  until you tap "use these targets".
+- **Once a day, and no supplements.** You can ask for one report per day. The coach gives general food ideas, not medical
+  advice, a diagnosis, or advice about supplements or medication, and our server rejects answers that do. The
+  young-or-underweight rule below applies: no calorie deficit.
+- **The training coach.** When you ask the coach for a week we send our server, and our server sends Anthropic: what you
+  train, your experience, equipment, training days and session length; your split, exercises, sets, reps and weights and
+  how they felt this week; on a new proposal, how many days in the last week you checked in as tired, sore or short on
+  time; and, only if you tick the box, your note about something to work around (for example an old injury). We do not
+  send your name, email address or account ID. The coach gives general training guidance, not medical advice, and our
+  server rejects answers that diagnose or give medical advice. Up to three proposals a day.
 - **Young or underweight members.** If you give no age, enter an age under 18, or your weight and height give a body mass index
   under 18.5, the app never sets a calorie deficit for you: your targets never go below maintenance (a goal of gaining
   muscle keeps its surplus), and the app does not ask the AI for them but uses a standard formula. Until you enter an age of 18 or older,
-  the app assumes no deficit is safe. Coach tips and training plans still use the AI. Talk to a doctor before you eat
+  the app assumes no deficit is safe. Coach tips and training coach weeks still use the AI. Talk to a doctor before you eat
   less.
 - **When and how.** Only after you agree on the AI consent screen, and only when you ask for an AI result. The app talks to
   our server, and our server talks to Anthropic. The access key stays on our server.
@@ -168,7 +187,7 @@ We keep data only as long as we need it for the purposes in section 3.
 
 | Data | How long |
 | --- | --- |
-| Account, profile, check-ins, meals, targets, schedule, training log, AI results, leaderboard entry, AI usage log | Until you delete it or your account. Deleting your account removes it from our live database right away. Copies in logs and at providers expire as set out below. |
+| Account, profile, check-ins, meals, saved foods and meals, targets, schedule, training log, training coach answers, proposed week and check-ins, AI results, leaderboard entry, AI usage log | Until you delete it or your account. Deleting your account removes it from our live database right away. Copies in logs and at providers expire as set out below. The training coach data and the saved foods and meals also go when you withdraw health consent. The daily coach report stays on your phone only and goes with the rest of your health data when you withdraw health consent, erase the data on this phone or sign out.   |
 | Reports about AI suggestions | Until you delete your account or complete withdrawal of health or AI consent (section 11). Those actions delete the reports already held for you from our live database. A report you deliberately send later is a new record. |
 | Private community reports and blocks | Until you delete your account or the reported/blocked member profile is deleted. You can remove a block at any time. |
 | Encrypted deletion and withdrawal recovery records | 30 days after the record is written, under the same R2 object lifecycle as the backups. They remain after account deletion only to preserve your choice during recovery. |
